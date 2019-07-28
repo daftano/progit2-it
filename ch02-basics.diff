@@ -1,0 +1,2819 @@
+1,2c1
+< [[ch02-git-basics-chapter]]
+< == Git Basics
+---
+> # Git Basics #
+5c4
+< This chapter covers every basic command you need to do the vast majority of the things you'll eventually spend your time doing with Git.
+---
+> This chapter covers every basic command you need to do the vast majority of the things you’ll eventually spend your time doing with Git.
+7c6
+< We'll also show you how to set up Git to ignore certain files and file patterns, how to undo mistakes quickly and easily, how to browse the history of your project and view changes between commits, and how to push and pull from remote repositories.
+---
+> We’ll also show you how to set up Git to ignore certain files and file patterns, how to undo mistakes quickly and easily, how to browse the history of your project and view changes between commits, and how to push and pull from remote repositories.
+8a8
+> ## Getting a Git Repository ##
+10,11c10,12
+< [[_getting_a_repo]]
+< === Getting a Git Repository
+---
+> You can get a Git project using two main approaches.
+> The first takes an existing project or directory and imports it into Git.
+> The second clones an existing Git repository from another server.
+13c14
+< You typically obtain a Git repository in one of two ways:
+---
+> ### Initializing a Repository in an Existing Directory ###
+15,16c16
+< 1. You can take a local directory that is currently not under version control, and turn it into a Git repository, or
+< 2. You can _clone_ an existing Git repository from elsewhere.
+---
+> If you’re starting to track an existing project in Git, you need to go to the project’s directory and type
+18c18
+< In either case, you end up with a Git repository on your local machine, ready for work.
+---
+> 	$ git init
+20,48c20
+< ==== Initializing a Repository in an Existing Directory
+< 
+< If you have a project directory that is currently not under version control and you want to start controlling it with Git, you first need to go to that project's directory.
+< If you've never done this, it looks a little different depending on which system you're running:
+< 
+< for Linux:
+< [source,console]
+< ----
+< $ cd /home/user/my_project
+< ----
+< for macOS:
+< [source,console]
+< ----
+< $ cd /Users/user/my_project
+< ----
+< for Windows:
+< [source,console]
+< ----
+< $ cd /c/user/my_project
+< ----
+< 
+< and type:
+< 
+< [source,console]
+< ----
+< $ git init
+< ----
+< 
+< This creates a new subdirectory named `.git` that contains all of your necessary repository files -- a Git repository skeleton.
+---
+> This creates a new subdirectory named `.git` that contains all of your necessary repository files — a Git repository skeleton.
+50c22
+< (See <<ch10-git-internals#ch10-git-internals>> for more information about exactly what files are contained in the `.git` directory you just created.)(((git commands, init)))
+---
+> (See *Chapter 9* for more information about exactly what files are contained in the `.git` directory you just created.)
+53c25
+< You can accomplish that with a few `git add` commands that specify the files you want to track, followed by a `git commit`:
+---
+> You can accomplish that with a few `git add` commands that specify the files you want to track, followed by a commit:
+55,60c27,29
+< [source,console]
+< ----
+< $ git add *.c
+< $ git add LICENSE
+< $ git commit -m 'initial project version'
+< ----
+---
+> 	$ git add *.c
+> 	$ git add README
+> 	$ git commit -m 'initial project version'
+62c31
+< We'll go over what these commands do in just a minute.
+---
+> We’ll go over what these commands do in just a minute.
+65,66c34
+< [[_git_cloning]]
+< ==== Cloning an Existing Repository
+---
+> ### Cloning an Existing Repository ###
+68,90c36,40
+< If you want to get a copy of an existing Git repository -- for example, a project you'd like to contribute to -- the command you need is `git clone`.
+< If you're familiar with other VCS systems such as Subversion, you'll notice that the command is "clone" and not "checkout".
+< This is an important distinction -- instead of getting just a working copy, Git receives a full copy of nearly all data that the server has.
+< Every version of every file for the history of the project is pulled down by default when you run `git clone`.
+< In fact, if your server disk gets corrupted, you can often use nearly any of the clones on any client to set the server back to the state it was in when it was cloned (you may lose some server-side hooks and such, but all the versioned data would be there -- see <<ch04-git-on-the-server#_getting_git_on_a_server>> for more details).
+< 
+< You clone a repository with `git clone <url>`.(((git commands, clone)))
+< For example, if you want to clone the Git linkable library called `libgit2`, you can do so like this:
+< 
+< [source,console]
+< ----
+< $ git clone https://github.com/libgit2/libgit2
+< ----
+< 
+< That creates a directory named `libgit2`, initializes a `.git` directory inside it, pulls down all the data for that repository, and checks out a working copy of the latest version.
+< If you go into the new `libgit2` directory that was just created, you'll see the project files in there, ready to be worked on or used.
+< 
+< If you want to clone the repository into a directory named something other than `libgit2`, you can specify the new directory name as an additional argument:
+< 
+< [source,console]
+< ----
+< $ git clone https://github.com/libgit2/libgit2 mylibgit
+< ----
+---
+> If you want to get a copy of an existing Git repository — for example, a project you’d like to contribute to — the command you need is `git clone`.
+> If you’re familiar with other VCS systems such as Subversion, you’ll notice that the command is `clone` and not `checkout`.
+> This is an important distinction — Git receives a copy of nearly all data that the server has.
+> Every version of every file for the history of the project is pulled down when you run `git clone`.
+> In fact, if your server disk gets corrupted, you can use any of the clones on any client to set the server back to the state it was in when it was cloned (you may lose some server-side hooks and such, but all the versioned data would be there — see *Chapter 4* for more details).
+92c42,43
+< That command does the same thing as the previous one, but the target directory is called `mylibgit`.
+---
+> You clone a repository with `git clone [url]`.
+> For example, if you want to clone the Ruby Git library called Grit, you can do so like this:
+94,96c45,49
+< Git has a number of different transfer protocols you can use.
+< The previous example uses the `https://` protocol, but you may also see `git://` or `user@server:path/to/repo.git`, which uses the SSH transfer protocol.
+< <<ch04-git-on-the-server#_getting_git_on_a_server>> will introduce all of the available options the server can set up to access your Git repository and the pros and cons of each.
+---
+> 	$ git clone git://github.com/schacon/grit.git
+> 
+> That creates a directory named `grit`, initializes a `.git` directory inside it, pulls down all the data for that repository, and checks out a working copy of the latest version.
+> If you go into the new `grit` directory, you’ll see the project files in there, ready to be worked on or used.
+> If you want to clone the repository into a directory named something other than grit, you can specify that as the next command-line option:
+97a51
+> 	$ git clone git://github.com/schacon/grit.git mygrit
+99c53
+< === Recording Changes to the Repository
+---
+> That command does the same thing as the previous one, but the target directory is called `mygrit`.
+101,102c55,59
+< At this point, you should have a _bona fide_ Git repository on your local machine, and a checkout or _working copy_ of all of its files in front of you.
+< Typically, you'll want to start making changes and committing snapshots of those changes into your repository each time the project reaches a state you want to record.
+---
+> Git has a number of different transfer protocols you can use.
+> The previous example uses the `git://` protocol, but you may also see `http(s)://` or `user@server:/path.git`, which uses the SSH transfer protocol.
+> *Chapter 4* will introduce all of the available options the server can set up to access your Git repository and the pros and cons of each.
+> 
+> ## Recording Changes to the Repository ##
+104,106c61,62
+< Remember that each file in your working directory can be in one of two states: _tracked_ or _untracked_.
+< Tracked files are files that were in the last snapshot; they can be unmodified, modified, or staged.
+< In short, tracked files are files that Git knows about.
+---
+> You have a bona fide Git repository and a checkout or working copy of the files for that project.
+> You need to make some changes and commit snapshots of those changes into your repository each time the project reaches a state you want to record.
+108,109c64,67
+< Untracked files are everything else -- any files in your working directory that were not in your last snapshot and are not in your staging area.
+< When you first clone a repository, all of your files will be tracked and unmodified because Git just checked them out and you haven't edited anything.
+---
+> Remember that each file in your working directory can be in one of two states: *tracked* or *untracked*.
+> *Tracked* files are files that were in the last snapshot; they can be *unmodified*, *modified*, or *staged*.
+> *Untracked* files are everything else — any files in your working directory that were not in your last snapshot and are not in your staging area.
+>  When you first clone a repository, all of your files will be tracked and unmodified because you just checked them out and haven’t edited anything.
+111,112c69,71
+< As you edit files, Git sees them as modified, because you've changed them since your last commit.
+< As you work, you selectively stage these modified files and then commit all those staged changes, and the cycle repeats.
+---
+> As you edit files, Git sees them as modified, because you’ve changed them since your last commit.
+> You *stage* these modified files and then commit all your staged changes, and the cycle repeats.
+> This lifecycle is illustrated in Figure 2-1.
+114,115c73,74
+< .The lifecycle of the status of your files.
+< image::images/lifecycle.png[The lifecycle of the status of your files.]
+---
+> Insert 18333fig0201.png
+> Figure 2-1. The lifecycle of the status of your files.
+117,118c76
+< [[_checking_status]]
+< ==== Checking the Status of Your Files
+---
+> ### Checking the Status of Your Files ###
+120c78
+< The main tool you use to determine which files are in which state is the `git status` command.(((git commands, status)))
+---
+> The main tool you use to determine which files are in which state is the `git status` command.
+123,146c81,97
+< [source,console]
+< ----
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< nothing to commit, working directory clean
+< ----
+< 
+< This means you have a clean working directory; in other words, none of your tracked files are modified.
+< Git also doesn't see any untracked files, or they would be listed here.
+< Finally, the command tells you which branch you're on and informs you that it has not diverged from the same branch on the server.
+< For now, that branch is always ``master'', which is the default; you won't worry about it here.
+< <<ch03-git-branching#ch03-git-branching>> will go over branches and references in detail.
+< 
+< Let's say you add a new file to your project, a simple `README` file.
+< If the file didn't exist before, and you run `git status`, you see your untracked file like so:
+< 
+< [source,console]
+< ----
+< $ echo 'My Project' > README
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Untracked files:
+---
+> 	$ git status
+> 	On branch master
+> 	nothing to commit, working directory clean
+> 
+> This means you have a clean working directory — in other words, no tracked files are modified.
+> Git also doesn’t see any untracked files, or they would be listed here.
+> Finally, the command tells you which branch you’re on.
+> For now, that is always `master`, which is the default; you won’t worry about it here.
+> The next chapter will go over branches and references in detail.
+> 
+> Let’s say you add a new file to your project, a simple `README` file.
+> If the file didn’t exist before, and you run `git status`, you see your untracked file like so:
+> 
+> 	$ vim README
+> 	$ git status
+> 	On branch master
+> 	Untracked files:
+151,152c102
+< nothing added to commit but untracked files present (use "git add" to track)
+< ----
+---
+> 	nothing added to commit but untracked files present (use "git add" to track)
+154,157c104,107
+< You can see that your new `README` file is untracked, because it's under the ``Untracked files'' heading in your status output.
+< Untracked basically means that Git sees a file you didn't have in the previous snapshot (commit); Git won't start including it in your commit snapshots until you explicitly tell it to do so.
+< It does this so you don't accidentally begin including generated binary files or other files that you did not mean to include.
+< You do want to start including `README`, so let's start tracking the file.
+---
+> You can see that your new `README` file is untracked, because it’s under the “Untracked files” heading in your status output.
+> Untracked basically means that Git sees a file you didn’t have in the previous snapshot (commit); Git won’t start including it in your commit snapshots until you explicitly tell it to do so.
+> It does this so you don’t accidentally begin including generated binary files or other files that you did not mean to include.
+> You do want to start including README, so let’s start tracking the file.
+159,160c109
+< [[_tracking_files]]
+< ==== Tracking New Files
+---
+> ### Tracking New Files ###
+162c111
+< In order to begin tracking a new file, you use the command `git add`.(((git commands, add)))
+---
+> In order to begin tracking a new file, you use the command `git add`.
+165,177c114,120
+< [source,console]
+< ----
+< $ git add README
+< ----
+< 
+< If you run your status command again, you can see that your `README` file is now tracked and staged to be committed:
+< 
+< [source,console]
+< ----
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> 	$ git add README
+> 
+> If you run your status command again, you can see that your `README` file is now tracked and staged:
+> 
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+182d124
+< ----
+184,199c126,138
+< You can tell that it's staged because it's under the ``Changes to be committed'' heading.
+< If you commit at this point, the version of the file at the time you ran `git add` is what will be in the subsequent historical snapshot.
+< You may recall that when you ran `git init` earlier, you then ran `git add <files>` -- that was to begin tracking files in your directory.(((git commands, init)))(((git commands, add)))
+< The `git add` command takes a path name for either a file or a directory; if it's a directory, the command adds all the files in that directory recursively.
+< 
+< ==== Staging Modified Files
+< 
+< Let's change a file that was already tracked.
+< If you change a previously tracked file called `CONTRIBUTING.md` and then run your `git status` command again, you get something that looks like this:
+< 
+< [source,console]
+< ----
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> You can tell that it’s staged because it’s under the “Changes to be committed” heading.
+> If you commit at this point, the version of the file at the time you ran `git add` is what will be in the historical snapshot.
+> You may recall that when you ran `git init` earlier, you then ran `git add (files)` — that was to begin tracking files in your directory.
+> The `git add` command takes a path name for either a file or a directory; if it’s a directory, the command adds all the files in that directory recursively.
+> 
+> ### Staging Modified Files ###
+> 
+> Let’s change a file that was already tracked.
+> If you change a previously tracked file called `benchmarks.rb` and then run your `status` command again, you get something that looks like this:
+> 
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+204c143
+< Changes not staged for commit:
+---
+> 	Changes not staged for commit:
+208c147
+<     modified:   CONTRIBUTING.md
+---
+> 	        modified:   benchmarks.rb
+210d148
+< ----
+212,224c150,157
+< The `CONTRIBUTING.md` file appears under a section named ``Changes not staged for commit'' -- which means that a file that is tracked has been modified in the working directory but not yet staged.
+< To stage it, you run the `git add` command.
+< `git add` is a multipurpose command -- you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved.
+< It may be helpful to think of it more as ``add precisely this content to the next commit'' rather than ``add this file to the project''.(((git commands, add)))
+< Let's run `git add` now to stage the `CONTRIBUTING.md` file, and then run `git status` again:
+< 
+< [source,console]
+< ----
+< $ git add CONTRIBUTING.md
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> The `benchmarks.rb` file appears under a section named “Changes not staged for commit” — which means that a file that is tracked has been modified in the working directory but not yet staged.
+> To stage it, you run the `git add` command (it’s a multipurpose command — you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved).
+> Let’s run `git add` now to stage the `benchmarks.rb` file, and then run `git status` again:
+> 
+> 	$ git add benchmarks.rb
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+228c161
+<     modified:   CONTRIBUTING.md
+---
+> 	        modified:   benchmarks.rb
+230d162
+< ----
+233,243c165,172
+< At this point, suppose you remember one little change that you want to make in `CONTRIBUTING.md` before you commit it.
+< You open it again and make that change, and you're ready to commit.
+< However, let's run `git status` one more time:
+< 
+< [source,console]
+< ----
+< $ vim CONTRIBUTING.md
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> At this point, suppose you remember one little change that you want to make in `benchmarks.rb` before you commit it.
+> You open it again and make that change, and you’re ready to commit.
+> However, let’s run `git status` one more time:
+> 
+> 	$ vim benchmarks.rb
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+247c176
+<     modified:   CONTRIBUTING.md
+---
+> 	        modified:   benchmarks.rb
+249c178
+< Changes not staged for commit:
+---
+> 	Changes not staged for commit:
+253c182
+<     modified:   CONTRIBUTING.md
+---
+> 	        modified:   benchmarks.rb
+255d183
+< ----
+257,261c185,187
+< What the heck?
+< Now `CONTRIBUTING.md` is listed as both staged _and_ unstaged.
+< How is that possible?
+< It turns out that Git stages a file exactly as it is when you run the `git add` command.
+< If you commit now, the version of `CONTRIBUTING.md` as it was when you last ran the `git add` command is how it will go into the commit, not the version of the file as it looks in your working directory when you run `git commit`.
+---
+> What the heck? Now `benchmarks.rb` is listed as both staged and unstaged.
+> How is that possible? It turns out that Git stages a file exactly as it is when you run the `git add` command.
+> If you commit now, the version of `benchmarks.rb` as it was when you last ran the `git add` command is how it will go into the commit, not the version of the file as it looks in your working directory when you run `git commit`.
+264,270c190,193
+< [source,console]
+< ----
+< $ git add CONTRIBUTING.md
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> 	$ git add benchmarks.rb
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+274,277c197
+<     modified:   CONTRIBUTING.md
+< ----
+< 
+< ==== Short Status
+---
+> 	        modified:   benchmarks.rb
+279,296d198
+< While the `git status` output is pretty comprehensive, it's also quite wordy.
+< Git also has a short status flag so you can see your changes in a more compact way.
+< If you run `git status -s` or `git status --short` you get a far more simplified output from the command:
+< 
+< [source,console]
+< ----
+< $ git status -s
+<  M README
+< MM Rakefile
+< A  lib/git.rb
+< M  lib/simplegit.rb
+< ?? LICENSE.txt
+< ----
+< 
+< New files that aren't tracked have a `??` next to them, new files that have been added to the staging area have an `A`, modified files have an `M` and so on.
+< There are two columns to the output -- the left-hand column indicates the status of the staging area and the right-hand column indicates the status of the working tree.
+< So for example in that output, the `README` file is modified in the working directory but not yet staged, while the `lib/simplegit.rb` file is modified and staged.
+< The `Rakefile` was modified, staged and then modified again, so there are changes to it that are both staged and unstaged.
+298,299c200
+< [[_ignoring]]
+< ==== Ignoring Files
+---
+> ### Ignoring Files ###
+301c202
+< Often, you'll have a class of files that you don't want Git to automatically add or even show you as being untracked.
+---
+> Often, you’ll have a class of files that you don’t want Git to automatically add or even show you as being untracked.
+303,304c204,205
+< In such cases, you can create a file listing patterns to match them named `.gitignore`.(((ignoring files)))
+< Here is an example `.gitignore` file:
+---
+> In such cases, you can create a file listing patterns to match them named `.gitignore`.
+>  Here is an example `.gitignore` file:
+306,316c207,214
+< [source,console]
+< ----
+< $ cat .gitignore
+< *.[oa]
+< *~
+< ----
+< 
+< The first line tells Git to ignore any files ending in ``.o'' or ``.a'' -- object and archive files that may be the product of building your code.
+< The second line tells Git to ignore all files whose names end with a tilde (`~`), which is used by many text editors such as Emacs to mark temporary files.
+< You may also include a log, tmp, or pid directory; automatically generated documentation; and so on.
+< Setting up a `.gitignore` file for your new repository before you get going is generally a good idea so you don't accidentally commit files that you really don't want in your Git repository.
+---
+> 	$ cat .gitignore
+> 	*.[oa]
+> 	*~
+> 
+> The first line tells Git to ignore any files ending in `.o` or `.a` — *object* and *archive* files that may be the product of building your code.
+> The second line tells Git to ignore all files that end with a tilde (`~`), which is used by many text editors such as Emacs to mark temporary files.
+> You may also include a `log`, `tmp`, or `pid` directory; automatically generated documentation; and so on.
+> Setting up a `.gitignore` file before you get going is generally a good idea so you don’t accidentally commit files that you really don’t want in your Git repository.
+321,322c219
+< *  Standard glob patterns work, and will be applied recursively throughout the entire working tree.
+< *  You can start patterns with a forward slash (`/`) to avoid recursivity.
+---
+> *	Standard glob patterns work.
+327,328c224
+< An asterisk (`*`) matches zero or more characters; `[abc]` matches any character inside the brackets (in this case a, b, or c); a question mark (`?`) matches a single character; and brackets enclosing characters separated by a hyphen (`[0-9]`) matches any character between them (in this case 0 through 9).
+< You can also use two asterisks to match nested directories; `a/**/z` would match `a/z`, `a/b/z`, `a/b/c/z`, and so on.
+---
+> An asterisk (`*`) matches zero or more characters; `[abc]` matches any character inside the brackets (in this case `a`, `b`, or `c`); a question mark (`?`) matches a single character; and brackets enclosing characters separated by a hyphen(`[0-9]`) matches any character in the range (in this case 0 through 9) .
+332,384c228,254
+< [source]
+< ----
+< # ignore all .a files
+< *.a
+< 
+< # but do track lib.a, even though you're ignoring .a files above
+< !lib.a
+< 
+< # only ignore the TODO file in the current directory, not subdir/TODO
+< /TODO
+< 
+< # ignore all files in any directory named build
+< build/
+< 
+< # ignore doc/notes.txt, but not doc/server/arch.txt
+< doc/*.txt
+< 
+< # ignore all .pdf files in the doc/ directory and any of its subdirectories
+< doc/**/*.pdf
+< ----
+< 
+< [TIP]
+< ====
+< GitHub maintains a fairly comprehensive list of good `.gitignore` file examples for dozens of projects and languages at https://github.com/github/gitignore[] if you want a starting point for your project.
+< ====
+< 
+< [NOTE]
+< ====
+< In the simple case, a repository might have a single `.gitignore` file in its root directory, which applies recursively to the entire repository.
+< However, it is also possible to have additional `.gitignore` files in subdirectories.
+< The rules in these nested `.gitignore` files apply only to the files under the directory where they are located.
+< (The Linux kernel source repository has 206 `.gitignore` files.)
+< 
+< It is beyond the scope of this book to get into the details of multiple `.gitignore` files; see `man gitignore` for the details.
+< ====
+< 
+< [[_git_diff_staged]]
+< ==== Viewing Your Staged and Unstaged Changes
+< 
+< If the `git status` command is too vague for you -- you want to know exactly what you changed, not just which files were changed -- you can use the `git diff` command.(((git commands, diff)))
+< We'll cover `git diff` in more detail later, but you'll probably use it most often to answer these two questions: What have you changed but not yet staged?
+< And what have you staged that you are about to commit?
+< Although `git status` answers those questions very generally by listing the file names, `git diff` shows you the exact lines added and removed -- the patch, as it were.
+< 
+< Let's say you edit and stage the `README` file again and then edit the `CONTRIBUTING.md` file without staging it.
+< If you run your `git status` command, you once again see something like this:
+< 
+< [source,console]
+< ----
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> 	# a comment - this is ignored
+> 	# no .a files
+> 	*.a
+> 	# but do track lib.a, even though you're ignoring .a files above
+> 	!lib.a
+> 	# only ignore the root TODO file, not subdir/TODO
+> 	/TODO
+> 	# ignore all files in the build/ directory
+> 	build/
+> 	# ignore doc/notes.txt, but not doc/server/arch.txt
+> 	doc/*.txt
+> 	# ignore all .txt files in the doc/ directory
+> 	doc/**/*.txt
+> 
+> A `**/` pattern is available in Git since version 1.8.2.
+> 
+> ### Viewing Your Staged and Unstaged Changes ###
+> 
+> If the `git status` command is too vague for you — you want to know exactly what you changed, not just which files were changed — you can use the `git diff` command.
+> We’ll cover `git diff` in more detail later; but you’ll probably use it most often to answer these two questions: What have you changed but not yet staged? And what have you staged that you are about to commit? Although `git status` answers those questions very generally, `git diff` shows you the exact lines added and removed — the patch, as it were.
+> 
+> Let’s say you edit and stage the `README` file again and then edit the `benchmarks.rb` file without staging it.
+> If you run your `status` command, you once again see something like this:
+> 
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+387c257
+<     modified:   README
+---
+> 	        new file:   README
+389c259
+< Changes not staged for commit:
+---
+> 	Changes not staged for commit:
+393,394c263
+<     modified:   CONTRIBUTING.md
+< ----
+---
+> 	        modified:   benchmarks.rb
+396d264
+< To see what you've changed but not yet staged, type `git diff` with no other arguments:
+398,415c266,283
+< [source,console]
+< ----
+< $ git diff
+< diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+< index 8ebb991..643e24f 100644
+< --- a/CONTRIBUTING.md
+< +++ b/CONTRIBUTING.md
+< @@ -65,7 +65,8 @@ branch directly, things can get messy.
+<  Please include a nice description of your changes when you submit your PR;
+<  if we have to read the whole diff to figure out why you're contributing
+<  in the first place, you're less likely to get feedback and have your change
+< -merged in.
+< +merged in. Also, split your changes into comprehensive chunks if your patch is
+< +longer than a dozen lines.
+< 
+<  If you are starting to work on a particular area, feel free to submit a PR
+<  that highlights your work in progress (and note in the PR title that it's
+< ----
+---
+> To see what you’ve changed but not yet staged, type `git diff` with no other arguments:
+> 
+> 	$ git diff
+> 	diff --git a/benchmarks.rb b/benchmarks.rb
+> 	index 3cb747f..da65585 100644
+> 	--- a/benchmarks.rb
+> 	+++ b/benchmarks.rb
+> 	@@ -36,6 +36,10 @@ def main
+> 	           @commit.parents[0].parents[0].parents[0]
+> 	         end
+> 
+> 	+        run_code(x, 'commits 1') do
+> 	+          git.commits.size
+> 	+        end
+> 	+
+> 	         run_code(x, 'commits 2') do
+> 	           log = git.commits('master', 15)
+> 	           log.size
+418c286
+< The result tells you the changes you've made that you haven't yet staged.
+---
+> The result tells you the changes you’ve made that you haven’t yet staged.
+420,421c288,289
+< If you want to see what you've staged that will go into your next commit, you can use `git diff --staged`.
+< This command compares your staged changes to your last commit:
+---
+> If you want to see what you’ve staged that will go into your next commit, you can use `git diff --cached`.
+> (In Git versions 1.6.1 and later, you can also use `git diff --staged`, which may be easier to remember.) This command compares your staged changes to your last commit:
+423,448c291,313
+< [source,console]
+< ----
+< $ git diff --staged
+< diff --git a/README b/README
+< new file mode 100644
+< index 0000000..03902a1
+< --- /dev/null
+< +++ b/README
+< @@ -0,0 +1 @@
+< +My Project
+< ----
+< 
+< It's important to note that `git diff` by itself doesn't show all changes made since your last commit -- only changes that are still unstaged.
+< If you've staged all of your changes, `git diff` will give you no output.
+< 
+< For another example, if you stage the `CONTRIBUTING.md` file and then edit it, you can use `git diff` to see the changes in the file that are staged and the changes that are unstaged.
+< If our environment looks like this:
+< 
+< [source,console]
+< ----
+< $ git add CONTRIBUTING.md
+< $ echo '# test line' >> CONTRIBUTING.md
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> 	$ git diff --cached
+> 	diff --git a/README b/README
+> 	new file mode 100644
+> 	index 0000000..03902a1
+> 	--- /dev/null
+> 	+++ b/README2
+> 	@@ -0,0 +1,5 @@
+> 	+grit
+> 	+ by Tom Preston-Werner, Chris Wanstrath
+> 	+ http://github.com/mojombo/grit
+> 	+
+> 	+Grit is a Ruby library for extracting information from a Git repository
+> 
+> It’s important to note that `git diff` by itself doesn’t show all changes made since your last commit — only changes that are still unstaged.
+> This can be confusing, because if you’ve staged all of your changes, `git diff` will give you no output.
+> 
+> For another example, if you stage the `benchmarks.rb` file and then edit it, you can use `git diff` to see the changes in the file that are staged and the changes that are unstaged:
+> 
+> 	$ git add benchmarks.rb
+> 	$ echo '# test line' >> benchmarks.rb
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+451c316
+<     modified:   CONTRIBUTING.md
+---
+> 	        modified:   benchmarks.rb
+453c318
+< Changes not staged for commit:
+---
+> 	Changes not staged for commit:
+457,458c322
+<     modified:   CONTRIBUTING.md
+< ----
+---
+> 	        modified:   benchmarks.rb
+460d323
+< Now you can use `git diff` to see what is still unstaged:
+462,504c325
+< [source,console]
+< ----
+< $ git diff
+< diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+< index 643e24f..87f08c8 100644
+< --- a/CONTRIBUTING.md
+< +++ b/CONTRIBUTING.md
+< @@ -119,3 +119,4 @@ at the
+<  ## Starter Projects
+< 
+<  See our [projects list](https://github.com/libgit2/libgit2/blob/development/PROJECTS.md).
+< +# test line
+< ----
+< 
+< and `git diff --cached` to see what you've staged so far (`--staged` and `--cached` are synonyms):
+< 
+< [source,console]
+< ----
+< $ git diff --cached
+< diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+< index 8ebb991..643e24f 100644
+< --- a/CONTRIBUTING.md
+< +++ b/CONTRIBUTING.md
+< @@ -65,7 +65,8 @@ branch directly, things can get messy.
+<  Please include a nice description of your changes when you submit your PR;
+<  if we have to read the whole diff to figure out why you're contributing
+<  in the first place, you're less likely to get feedback and have your change
+< -merged in.
+< +merged in. Also, split your changes into comprehensive chunks if your patch is
+< +longer than a dozen lines.
+< 
+<  If you are starting to work on a particular area, feel free to submit a PR
+<  that highlights your work in progress (and note in the PR title that it's
+< ----
+< 
+< [NOTE]
+< .Git Diff in an External Tool
+< ====
+< We will continue to use the `git diff` command in various ways throughout the rest of the book.
+< There is another way to look at these diffs if you prefer a graphical or external diff viewing program instead.
+< If you run `git difftool` instead of `git diff`, you can view any of these diffs in software like emerge, vimdiff and many more (including commercial products).
+< Run `git difftool --tool-help` to see what is available on your system.
+< ====
+---
+> Now you can use `git diff` to see what is still unstaged
+506,507c327,357
+< [[_committing_changes]]
+< ==== Committing Your Changes
+---
+> 	$ git diff
+> 	diff --git a/benchmarks.rb b/benchmarks.rb
+> 	index e445e28..86b2f7c 100644
+> 	--- a/benchmarks.rb
+> 	+++ b/benchmarks.rb
+> 	@@ -127,3 +127,4 @@ end
+> 	 main()
+> 
+> 	 ##pp Grit::GitRuby.cache_client.stats
+> 	+# test line
+> 
+> and `git diff --cached` to see what you’ve staged so far:
+> 
+> 	$ git diff --cached
+> 	diff --git a/benchmarks.rb b/benchmarks.rb
+> 	index 3cb747f..e445e28 100644
+> 	--- a/benchmarks.rb
+> 	+++ b/benchmarks.rb
+> 	@@ -36,6 +36,10 @@ def main
+> 	          @commit.parents[0].parents[0].parents[0]
+> 	        end
+> 
+> 	+        run_code(x, 'commits 1') do
+> 	+          git.commits.size
+> 	+        end
+> 	+
+> 	        run_code(x, 'commits 2') do
+> 	          log = git.commits('master', 15)
+> 	          log.size
+> 
+> ### Committing Your Changes ###
+510c360
+< Remember that anything that is still unstaged -- any files you have created or modified that you haven't run `git add` on since you edited them -- won't go into this commit.
+---
+> Remember that anything that is still unstaged — any files you have created or modified that you haven’t run `git add` on since you edited them — won’t go into this commit.
+512,513c362,363
+< In this case, let's say that the last time you ran `git status`, you saw that everything was staged, so you're ready to commit your changes.(((git commands, status)))
+< The simplest way to commit is to type `git commit`:(((git commands, commit)))
+---
+> In this case, the last time you ran `git status`, you saw that everything was staged, so you’re ready to commit your changes.
+> The simplest way to commit is to type `git commit`:
+515,518c365
+< [source,console]
+< ----
+< $ git commit
+< ----
+---
+> 	$ git commit
+521c368
+< (This is set by your shell's `EDITOR` environment variable -- usually vim or emacs, although you can configure it with whatever you want using the `git config --global core.editor` command as you saw in <<ch01-getting-started#ch01-getting-started>>).(((editor, changing default)))(((git commands, config)))
+---
+> (This is set by your shell’s `$EDITOR` environment variable — usually vim or emacs, although you can configure it with whatever you want using the `git config --global core.editor` command as you saw in *Chapter 1*).
+525,541c372,383
+< [source]
+< ----
+< 
+< # Please enter the commit message for your changes. Lines starting
+< # with '#' will be ignored, and an empty message aborts the commit.
+< # On branch master
+< # Your branch is up-to-date with 'origin/master'.
+< #
+< # Changes to be committed:
+< #	new file:   README
+< #	modified:   CONTRIBUTING.md
+< #
+< ~
+< ~
+< ~
+< ".git/COMMIT_EDITMSG" 9L, 283C
+< ----
+---
+> 	# Please enter the commit message for your changes.
+> Lines starting
+> 	# with '#' will be ignored, and an empty message aborts the commit.
+> 	# On branch master
+> 	# Changes to be committed:
+> 	#       new file:   README
+> 	#       modified:   benchmarks.rb
+> 	#
+> 	~
+> 	~
+> 	~
+> 	".git/COMMIT_EDITMSG" 10L, 283C
+544,547c386,388
+< You can remove these comments and type your commit message, or you can leave them there to help you remember what you're committing.
+< (For an even more explicit reminder of what you've modified, you can pass the `-v` option to `git commit`.
+< Doing so also puts the diff of your change in the editor so you can see exactly what changes you're committing.)
+< When you exit the editor, Git creates your commit with that commit message (with the comments and diff stripped out).
+---
+> You can remove these comments and type your commit message, or you can leave them there to help you remember what you’re committing.
+> (For an even more explicit reminder of what you’ve modified, you can pass the `-v` option to `git commit`.
+> Doing so also puts the diff of your change in the editor so you can see exactly what you did.) When you exit the editor, Git creates your commit with that commit message (with the comments and diff stripped out).
+551,555c392,394
+< [source,console]
+< ----
+< $ git commit -m "Story 182: Fix benchmarks for speed"
+< [master 463dc4f] Story 182: Fix benchmarks for speed
+<  2 files changed, 2 insertions(+)
+---
+> 	$ git commit -m "Story 182: Fix benchmarks for speed"
+> 	[master 463dc4f] Story 182: Fix benchmarks for speed
+> 	 2 files changed, 3 insertions(+)
+557d395
+< ----
+559,560c397
+< Now you've created your first commit!
+< You can see that the commit has given you some output about itself: which branch you committed to (`master`), what SHA-1 checksum the commit has (`463dc4f`), how many files were changed, and statistics about lines added and removed in the commit.
+---
+> Now you’ve created your first commit! You can see that the commit has given you some output about itself: which branch you committed to (`master`), what SHA-1 checksum the commit has (`463dc4f`), how many files were changed, and statistics about lines added and removed in the commit.
+563,564c400,401
+< Anything you didn't stage is still sitting there modified; you can do another commit to add it to your history.
+< Every time you perform a commit, you're recording a snapshot of your project that you can revert to or compare to later.
+---
+> Anything you didn’t stage is still sitting there modified; you can do another commit to add it to your history.
+> Every time you perform a commit, you’re recording a snapshot of your project that you can revert to or compare to later.
+566c403
+< ==== Skipping the Staging Area
+---
+> ### Skipping the Staging Area ###
+568d404
+< (((staging area, skipping)))
+571c407
+< Adding the `-a` option to the `git commit` command makes Git automatically stage every file that is already tracked before doing the commit, letting you skip the `git add` part:
+---
+> Providing the `-a` option to the `git commit` command makes Git automatically stage every file that is already tracked before doing the commit, letting you skip the `git add` part:
+573,578c409,411
+< [source,console]
+< ----
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes not staged for commit:
+---
+> 	$ git status
+> 	On branch master
+> 	Changes not staged for commit:
+582c415
+<     modified:   CONTRIBUTING.md
+---
+> 	        modified:   benchmarks.rb
+584,592c417,420
+< no changes added to commit (use "git add" and/or "git commit -a")
+< $ git commit -a -m 'added new benchmarks'
+< [master 83e38c7] added new benchmarks
+<  1 file changed, 5 insertions(+), 0 deletions(-)
+< ----
+< 
+< Notice how you don't have to run `git add` on the `CONTRIBUTING.md` file in this case before you commit.
+< That's because the `-a` flag includes all changed files.
+< This is convenient, but be careful; sometimes this flag will cause you to include unwanted changes.
+---
+> 	no changes added to commit (use "git add" and/or "git commit -a")
+> 	$ git commit -a -m 'added new benchmarks'
+> 	[master 83e38c7] added new benchmarks
+> 	 1 files changed, 5 insertions(+)
+594,595c422,424
+< [[_removing_files]]
+< ==== Removing Files
+---
+> Notice how you don’t have to run `git add` on the `benchmarks.rb` file in this case before you commit.
+> 
+> ### Removing Files ###
+597d425
+< (((files, removing)))
+599c427
+< The `git rm` command does that, and also removes the file from your working directory so you don't see it as an untracked file the next time around.
+---
+> The `git rm` command does that and also removes the file from your working directory so you don’t see it as an untracked file next time around.
+601c429
+< If you simply remove the file from your working directory, it shows up under the ``Changes not staged for commit'' (that is, _unstaged_) area of your `git status` output:
+---
+> If you simply remove the file from your working directory, it shows up under the “Changes not staged for commit” (that is, _unstaged_) area of your `git status` output:
+603,609c431,434
+< [source,console]
+< ----
+< $ rm PROJECTS.md
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes not staged for commit:
+---
+> 	$ rm grit.gemspec
+> 	$ git status
+> 	On branch master
+> 	Changes not staged for commit:
+613c438
+<         deleted:    PROJECTS.md
+---
+> 	        deleted:    grit.gemspec
+615,616c440
+< no changes added to commit (use "git add" and/or "git commit -a")
+< ----
+---
+> 	no changes added to commit (use "git add" and/or "git commit -a")
+618c442
+< Then, if you run `git rm`, it stages the file's removal:
+---
+> Then, if you run `git rm`, it stages the file’s removal:
+620,627c444,448
+< [source,console]
+< ----
+< $ git rm PROJECTS.md
+< rm 'PROJECTS.md'
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> 	$ git rm grit.gemspec
+> 	rm 'grit.gemspec'
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+630,631c451,452
+<     deleted:    PROJECTS.md
+< ----
+---
+> 	        deleted:    grit.gemspec
+> 	
+634,635c455,456
+< If you modified the file or had already added it to the staging area, you must force the removal with the `-f` option.
+< This is a safety feature to prevent accidental removal of data that hasn't yet been recorded in a snapshot and that can't be recovered from Git.
+---
+> If you modified the file and added it to the index already, you must force the removal with the `-f` option.
+> This is a safety feature to prevent accidental removal of data that hasn’t yet been recorded in a snapshot and that can’t be recovered from Git.
+642,645c463
+< [source,console]
+< ----
+< $ git rm --cached README
+< ----
+---
+> 	$ git rm --cached readme.txt
+648c466
+< That means you can do things such as:
+---
+> That means you can do things such as
+650,653c468
+< [source,console]
+< ----
+< $ git rm log/\*.log
+< ----
+---
+> 	$ git rm log/\*.log
+656c471,472
+< This is necessary because Git does its own filename expansion in addition to your shell's filename expansion.
+---
+> This is necessary because Git does its own filename expansion in addition to your shell’s filename expansion.
+> On Windows with the system console, the backslash must be omitted.
+660,663c476
+< [source,console]
+< ----
+< $ git rm \*~
+< ----
+---
+> 	$ git rm \*~
+665c478
+< This command removes all files whose names end with a `~`.
+---
+> This command removes all files that end with `~`.
+667,668c480
+< [[_git_mv]]
+< ==== Moving Files
+---
+> ### Moving Files ###
+670,671c482
+< (((files, moving)))
+< Unlike many other VCS systems, Git doesn't explicitly track file movement.
+---
+> Unlike many other VCS systems, Git doesn’t explicitly track file movement.
+673c484
+< However, Git is pretty smart about figuring that out after the fact -- we'll deal with detecting file movement a bit later.
+---
+> However, Git is pretty smart about figuring that out after the fact — we’ll deal with detecting file movement a bit later.
+675,676c486,487
+< Thus it's a bit confusing that Git has a `mv` command.
+< If you want to rename a file in Git, you can run something like:
+---
+> Thus it’s a bit confusing that Git has a `mv` command.
+> If you want to rename a file in Git, you can run something like
+678,681c489
+< [source,console]
+< ----
+< $ git mv file_from file_to
+< ----
+---
+> 	$ git mv file_from file_to
+684c492
+< In fact, if you run something like this and look at the status, you'll see that Git considers it a renamed file:
+---
+> In fact, if you run something like this and look at the status, you’ll see that Git considers it a renamed file:
+686,692c494,497
+< [source,console]
+< ----
+< $ git mv README.md README
+< $ git status
+< On branch master
+< Your branch is up-to-date with 'origin/master'.
+< Changes to be committed:
+---
+> 	$ git mv README README.txt
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+695,696c500,501
+<     renamed:    README.md -> README
+< ----
+---
+> 	        renamed:    README -> README.txt
+> 	
+700,709c505,507
+< [source,console]
+< ----
+< $ mv README.md README
+< $ git rm README.md
+< $ git add README
+< ----
+< 
+< Git figures out that it's a rename implicitly, so it doesn't matter if you rename a file that way or with the `mv` command.
+< The only real difference is that `git mv` is one command instead of three -- it's a convenience function.
+< More importantly, you can use any tool you like to rename a file, and address the add/rm later, before you commit.
+---
+> 	$ mv README README.txt
+> 	$ git rm README
+> 	$ git add README.txt
+710a509,511
+> Git figures out that it’s a rename implicitly, so it doesn’t matter if you rename a file that way or with the `mv` command.
+> The only real difference is that `mv` is one command instead of three — it’s a convenience function.
+> More important, you can use any tool you like to rename a file, and address the add/rm later, before you commit.
+712,713c513
+< [[_viewing_history]]
+< === Viewing the Commit History
+---
+> ## Viewing the Commit History ##
+715c515
+< After you have created several commits, or if you have cloned a repository with an existing commit history, you'll probably want to look back to see what has happened.
+---
+> After you have created several commits, or if you have cloned a repository with an existing commit history, you’ll probably want to look back to see what has happened.
+718c518
+< These examples use a very simple project called ``simplegit''.
+---
+> These examples use a very simple project called `simplegit` that I often use for demonstrations.
+721,733c521
+< [source,console]
+< ----
+< $ git clone https://github.com/schacon/simplegit-progit
+< ----
+< 
+< When you run `git log` in this project, you should get output that looks something like this:(((git commands, log)))
+< 
+< [source,console]
+< ----
+< $ git log
+< commit ca82a6dff817ec66f44342007202690a93763949
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Mon Mar 17 21:52:11 2008 -0700
+---
+> 	git clone git://github.com/schacon/simplegit-progit.git
+735c523
+<     changed the version number
+---
+> When you run `git log` in this project, you should get output that looks something like this:
+737,745c525,528
+< commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Sat Mar 15 16:40:33 2008 -0700
+< 
+<     removed unnecessary test
+< 
+< commit a11bef06a3f659402fe7563abf99ad00de2209e6
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Sat Mar 15 10:31:28 2008 -0700
+---
+> 	$ git log
+> 	commit ca82a6dff817ec66f44342007202690a93763949
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Mar 17 21:52:11 2008 -0700
+747,748c530
+<     first commit
+< ----
+---
+> 	    changed the version number
+750,751c532,540
+< By default, with no arguments, `git log` lists the commits made in that repository in reverse chronological order; that is, the most recent commits show up first.
+< As you can see, this command lists each commit with its SHA-1 checksum, the author's name and email, the date written, and the commit message.
+---
+> 	commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sat Mar 15 16:40:33 2008 -0700
+> 
+> 	    removed unnecessary test code
+> 
+> 	commit a11bef06a3f659402fe7563abf99ad00de2209e6
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sat Mar 15 10:31:28 2008 -0700
+753,754c542
+< A huge number and variety of options to the `git log` command are available to show you exactly what you're looking for.
+< Here, we'll show you some of the most popular.
+---
+> 	    first commit
+756,764c544,557
+< One of the more helpful options is `-p` or `--patch`, which shows the difference (the _patch_ output) introduced in each commit.
+< You can also limit the number of log entries displayed, such as using `-2` to show only the last two entries.
+< 
+< [source,console]
+< ----
+< $ git log -p -2
+< commit ca82a6dff817ec66f44342007202690a93763949
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Mon Mar 17 21:52:11 2008 -0700
+---
+> By default, with no arguments, `git log` lists the commits made in that repository in reverse chronological order.
+> That is, the most recent commits show up first.
+> As you can see, this command lists each commit with its SHA-1 checksum, the author’s name and e-mail, the date written, and the commit message.
+> 
+> A huge number and variety of options to the `git log` command are available to show you exactly what you’re looking for.
+> Here, we’ll show you some of the most-used options.
+> 
+> One of the more helpful options is `-p`, which shows the diff introduced in each commit.
+> You can also use `-2`, which limits the output to only the last two entries:
+> 
+> 	$ git log -p -2
+> 	commit ca82a6dff817ec66f44342007202690a93763949
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Mar 17 21:52:11 2008 -0700
+768,772c561,565
+< diff --git a/Rakefile b/Rakefile
+< index a874b73..8f94139 100644
+< --- a/Rakefile
+< +++ b/Rakefile
+< @@ -5,7 +5,7 @@ require 'rake/gempackagetask'
+---
+> 	diff --git a/Rakefile b/Rakefile
+> 	index a874b73..8f94139 100644
+> 	--- a/Rakefile
+> 	+++ b/Rakefile
+> 	@@ -5,5 +5,5 @@ require 'rake/gempackagetask'
+774d566
+<      s.platform  =   Gem::Platform::RUBY
+776,777c568,569
+< -    s.version   =   "0.1.0"
+< +    s.version   =   "0.1.1"
+---
+> 	-    s.version   =   "0.1.0"
+> 	+    s.version   =   "0.1.1"
+779,780c571
+<      s.email     =   "schacon@gee-mail.com"
+<      s.summary   =   "A simple gem for using Git in Ruby code."
+---
+> 	     s.email     =   "schacon@gee-mail.com
+782,792c573,583
+< commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Sat Mar 15 16:40:33 2008 -0700
+< 
+<     removed unnecessary test
+< 
+< diff --git a/lib/simplegit.rb b/lib/simplegit.rb
+< index a0a60ae..47c6340 100644
+< --- a/lib/simplegit.rb
+< +++ b/lib/simplegit.rb
+< @@ -18,8 +18,3 @@ class SimpleGit
+---
+> 	commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sat Mar 15 16:40:33 2008 -0700
+> 
+> 	    removed unnecessary test code
+> 
+> 	diff --git a/lib/simplegit.rb b/lib/simplegit.rb
+> 	index a0a60ae..47c6340 100644
+> 	--- a/lib/simplegit.rb
+> 	+++ b/lib/simplegit.rb
+> 	@@ -18,8 +18,3 @@ class SimpleGit
+796,801c587,592
+< -
+< -if $0 == __FILE__
+< -  git = SimpleGit.new
+< -  puts git.show
+< -end
+< ----
+---
+> 	-
+> 	-if $0 == __FILE__
+> 	-  git = SimpleGit.new
+> 	-  puts git.show
+> 	-end
+> 	\ No newline at end of file
+804a596,623
+> 
+> Sometimes it's easier to review changes on the word level rather than on the line level.
+> There is a `--word-diff` option available in Git, that you can append to the `git log -p` command to get word diff instead of normal line by line diff.
+> Word diff format is quite useless when applied to source code, but it comes in handy when applied to large text files, like books or your dissertation.
+> Here is an example:
+> 
+> 	$ git log -U1 --word-diff
+> 	commit ca82a6dff817ec66f44342007202690a93763949
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Mar 17 21:52:11 2008 -0700
+> 
+> 	    changed the version number
+> 
+> 	diff --git a/Rakefile b/Rakefile
+> 	index a874b73..8f94139 100644
+> 	--- a/Rakefile
+> 	+++ b/Rakefile
+> 	@@ -7,3 +7,3 @@ spec = Gem::Specification.new do |s|
+> 	    s.name      =   "simplegit"
+> 	    s.version   =   [-"0.1.0"-]{+"0.1.1"+}
+> 	    s.author    =   "Scott Chacon"
+> 
+> As you can see, there is no added and removed lines in this output as in a normal diff.
+> Changes are shown inline instead.
+> You can see the added word enclosed in `{+ +}` and removed one enclosed in `[- -]`.
+> You may also want to reduce the usual three lines context in diff output to only one line, as the context is now words, not lines.
+> You can do this with `-U1` as we did in the example above.
+> 
+808,813c627,630
+< [source,console]
+< ----
+< $ git log --stat
+< commit ca82a6dff817ec66f44342007202690a93763949
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Mon Mar 17 21:52:11 2008 -0700
+---
+> 	$ git log --stat
+> 	commit ca82a6dff817ec66f44342007202690a93763949
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Mar 17 21:52:11 2008 -0700
+820,822c637,639
+< commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Sat Mar 15 16:40:33 2008 -0700
+---
+> 	commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sat Mar 15 16:40:33 2008 -0700
+824c641
+<     removed unnecessary test
+---
+> 	    removed unnecessary test code
+829,831c646,648
+< commit a11bef06a3f659402fe7563abf99ad00de2209e6
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Sat Mar 15 10:31:28 2008 -0700
+---
+> 	commit a11bef06a3f659402fe7563abf99ad00de2209e6
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sat Mar 15 10:31:28 2008 -0700
+839d655
+< ----
+843d658
+< 
+847c662
+< The `oneline` option prints each commit on a single line, which is useful if you're looking at a lot of commits.
+---
+> The `oneline` option prints each commit on a single line, which is useful if you’re looking at a lot of commits.
+850,856c665,668
+< [source,console]
+< ----
+< $ git log --pretty=oneline
+< ca82a6dff817ec66f44342007202690a93763949 changed the version number
+< 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7 removed unnecessary test
+< a11bef06a3f659402fe7563abf99ad00de2209e6 first commit
+< ----
+---
+> 	$ git log --pretty=oneline
+> 	ca82a6dff817ec66f44342007202690a93763949 changed the version number
+> 	085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7 removed unnecessary test code
+> 	a11bef06a3f659402fe7563abf99ad00de2209e6 first commit
+859c671
+< This is especially useful when you're generating output for machine parsing -- because you specify the format explicitly, you know it won't change with updates to Git:(((log formatting)))
+---
+> This is especially useful when you’re generating output for machine parsing — because you specify the format explicitly, you know it won’t change with updates to Git:
+861,891c673,700
+< [source,console]
+< ----
+< $ git log --pretty=format:"%h - %an, %ar : %s"
+< ca82a6d - Scott Chacon, 6 years ago : changed the version number
+< 085bb3b - Scott Chacon, 6 years ago : removed unnecessary test
+< a11bef0 - Scott Chacon, 6 years ago : first commit
+< ----
+< 
+< <<pretty_format>> lists some of the more useful options that `format` takes.
+< 
+< [[pretty_format]]
+< .Useful options for `git log --pretty=format`
+< [cols="1,4",options="header"]
+< |================================
+< | Option   | Description of Output
+< | `%H`     | Commit hash
+< | `%h`     | Abbreviated commit hash
+< | `%T`     | Tree hash
+< | `%t`     | Abbreviated tree hash
+< | `%P`     | Parent hashes
+< | `%p`     | Abbreviated parent hashes
+< | `%an`    | Author name
+< | `%ae`    | Author email
+< | `%ad`    | Author date (format respects the --date=option)
+< | `%ar`    | Author date, relative
+< | `%cn`    | Committer name
+< | `%ce`    | Committer email
+< | `%cd`    | Committer date
+< | `%cr`    | Committer date, relative
+< | `%s`     | Subject
+< |================================
+---
+> 	$ git log --pretty=format:"%h - %an, %ar : %s"
+> 	ca82a6d - Scott Chacon, 11 months ago : changed the version number
+> 	085bb3b - Scott Chacon, 11 months ago : removed unnecessary test code
+> 	a11bef0 - Scott Chacon, 11 months ago : first commit
+> 
+> Table 2-1 lists some of the more useful options that format takes.
+> 
+> <!-- Attention to translators: this is a table declaration.
+> The lines must be formatted as follows
+> <TAB><First column text><TAB><Second column text>
+> -->
+> 
+> 	Option	Description of Output
+> 	%H	Commit hash
+> 	%h	Abbreviated commit hash
+> 	%T	Tree hash
+> 	%t	Abbreviated tree hash
+> 	%P	Parent hashes
+> 	%p	Abbreviated parent hashes
+> 	%an	Author name
+> 	%ae	Author e-mail
+> 	%ad	Author date (format respects the --date= option)
+> 	%ar	Author date, relative
+> 	%cn	Committer name
+> 	%ce	Committer email
+> 	%cd	Committer date
+> 	%cr	Committer date, relative
+> 	%s	Subject
+894,896c703,705
+< The author is the person who originally wrote the work, whereas the committer is the person who last applied the work.
+< So, if you send in a patch to a project and one of the core members applies the patch, both of you get credit -- you as the author, and the core member as the committer.
+< We'll cover this distinction a bit more in <<ch05-distributed-git#ch05-distributed-git>>.
+---
+> The _author_ is the person who originally wrote the patch, whereas the _committer_ is the person who last applied the patch.
+> So, if you send in a patch to a project and one of the core members applies the patch, both of you get credit — you as the author and the core member as the committer.
+> We’ll cover this distinction a bit more in *Chapter 5*.
+899c708
+< This option adds a nice little ASCII graph showing your branch and merge history:
+---
+> This option adds a nice little ASCII graph showing your branch and merge history, which we can see in our copy of the Grit project repository:
+901,936c710,742
+< [source,console]
+< ----
+< $ git log --pretty=format:"%h %s" --graph
+< * 2d3acf9 ignore errors from SIGCHLD on trap
+< *  5e3ee11 Merge branch 'master' of git://github.com/dustin/grit
+< |\
+< | * 420eac9 Added a method for getting the current branch.
+< * | 30e367c timeout code and tests
+< * | 5a09431 add timeout protection to grit
+< * | e1193f8 support for heads with slashes in them
+< |/
+< * d6016bc require time for xmlschema
+< *  11d191e Merge branch 'defunkt' into local
+< ----
+< 
+< This type of output will become more interesting as we go through branching and merging in the next chapter.
+< 
+< Those are only some simple output-formatting options to `git log` -- there are many more.
+< <<log_options>> lists the options we've covered so far, as well as some other common formatting options that may be useful, along with how they change the output of the log command.
+< 
+< [[log_options]]
+< .Common options to `git log`
+< [cols="1,4",options="header"]
+< |================================
+< | Option            | Description
+< | `-p`              | Show the patch introduced with each commit.
+< | `--stat`          | Show statistics for files modified in each commit.
+< | `--shortstat`     | Display only the changed/insertions/deletions line from the --stat command.
+< | `--name-only`     | Show the list of files modified after the commit information.
+< | `--name-status`   | Show the list of files affected with added/modified/deleted information as well.
+< | `--abbrev-commit` | Show only the first few characters of the SHA-1 checksum instead of all 40.
+< | `--relative-date` | Display the date in a relative format (for example, ``2 weeks ago'') instead of using the full date format.
+< | `--graph`         | Display an ASCII graph of the branch and merge history beside the log output.
+< | `--pretty`        | Show commits in an alternate format. Options include oneline, short, full, fuller, and format (where you specify your own format).
+< | `--oneline`       | Shorthand for `--pretty=oneline --abbrev-commit` used together.
+< |================================
+---
+> 	$ git log --pretty=format:"%h %s" --graph
+> 	* 2d3acf9 ignore errors from SIGCHLD on trap
+> 	*  5e3ee11 Merge branch 'master' of git://github.com/dustin/grit
+> 	|\
+> 	| * 420eac9 Added a method for getting the current branch.
+> 	* | 30e367c timeout code and tests
+> 	* | 5a09431 add timeout protection to grit
+> 	* | e1193f8 support for heads with slashes in them
+> 	|/
+> 	* d6016bc require time for xmlschema
+> 	*  11d191e Merge branch 'defunkt' into local
+> 
+> Those are only some simple output-formatting options to `git log` — there are many more.
+> Table 2-2 lists the options we’ve covered so far and some other common formatting options that may be useful, along with how they change the output of the `log` command.
+> 
+> <!-- Attention to translators: this is a table declaration.
+> The lines must be formatted as follows
+> <TAB><First column text><TAB><Second column text>
+> -->
+> 
+> 	Option	Description
+> 	-p	Show the patch introduced with each commit.
+> 	--word-diff	Show the patch in a word diff format.
+> 	--stat	Show statistics for files modified in each commit.
+> 	--shortstat	Display only the changed/insertions/deletions line from the --stat command.
+> 	--name-only	Show the list of files modified after the commit information.
+> 	--name-status	Show the list of files affected with added/modified/deleted information as well.
+> 	--abbrev-commit	Show only the first few characters of the SHA-1 checksum instead of all 40.
+> 	--relative-date	Display the date in a relative format (for example, “2 weeks ago”) instead of using the full date format.
+> 	--graph	Display an ASCII graph of the branch and merge history beside the log output.
+> 	--pretty	Show commits in an alternate format.
+> Options include oneline, short, full, fuller, and format (where you specify your own format).
+> 	--oneline	A convenience option short for `--pretty=oneline --abbrev-commit`.
+938c744
+< ==== Limiting Log Output
+---
+> ### Limiting Log Output ###
+940,941c746,747
+< In addition to output-formatting options, `git log` takes a number of useful limiting options; that is, options that let you show only a subset of commits.
+< You've seen one such option already -- the `-2` option, which displays only the last two commits.
+---
+> In addition to output-formatting options, `git log` takes a number of useful limiting options — that is, options that let you show only a subset of commits.
+> You’ve seen one such option already — the `-2` option, which shows only the last two commits.
+943c749
+< In reality, you're unlikely to use that often, because Git by default pipes all output through a pager so you see only one page of log output at a time.
+---
+> In reality, you’re unlikely to use that often, because Git by default pipes all output through a pager so you see only one page of log output at a time.
+948,951c754
+< [source,console]
+< ----
+< $ git log --since=2.weeks
+< ----
+---
+> 	$ git log --since=2.weeks
+953c756
+< This command works with lots of formats -- you can specify a specific date like `"2008-01-15"`, or a relative date such as `"2 years 1 day 3 minutes ago"`.
+---
+> This command works with lots of formats — you can specify a specific date (“2008-01-15”) or a relative date such as “2 years 1 day 3 minutes ago”.
+956a760
+> (Note that if you specify both author and grep options, the command will match commits with both.)
+958,972c762
+< [NOTE]
+< ====
+< You can specify more than one instance of both the `--author` and `--grep` search criteria, which
+< will limit the commit output to commits that match _any_ of the `--author` patterns and _any_
+< of the `--grep` patterns; however, adding the `--all-match` option further limits the output to
+< just those commits that match _all_ `--grep` patterns.
+< ====
+< 
+< Another really helpful filter is the `-S` option (colloquially referred to as Git's ``pickaxe'' option), which takes a string and shows only those commits that changed the number of occurrences of that string.
+< For instance, if you wanted to find the last commit that added or removed a reference to a specific function, you could call:
+< 
+< [source,console]
+< ----
+< $ git log -S function_name
+< ----
+---
+> If you want to specify multiple grep options, you have to add `--all-match` or the command will match commits with either.
+978c768,821
+< In <<limit_options>> we'll list these and a few other common options for your reference.
+---
+> In Table 2-3 we’ll list these and a few other common options for your reference.
+> 
+> <!-- Attention to translators: this is a table declaration.
+> The lines must be formatted as follows
+> <TAB><First column text><TAB><Second column text>
+> -->
+> 
+> 	Option	Description
+> 	-(n)	Show only the last n commits
+> 	--since, --after	Limit the commits to those whose CommitDate was made on-or-after the specified date/time.
+> 	--until, --before	Limit the commits to those whose CommitDate was made on-or-before the specified date/time.
+> 	--author	Only show commits in which the author entry matches the specified string.
+> 	--committer	Only show commits in which the committer entry matches the specified string.
+> 
+> 
+> ### Limiting Log Output according to Date/Time ###
+> 
+> To determine which commits in the Git source code repository (git://git.kernel.org/pub/scm/git/git.git) have CommitDate on 2014-04-29 relative to your local timezone (as set on your computer), use
+> 
+>     $ git log --after="2014-04-29 00:00:00" --before="2014-04-29 23:59:59" \
+>       --pretty=fuller
+> 
+> As the output will be different according to the timezone where it will be run, it's recommended to always use an absolute time such as ISO 8601 format (which includes timezone information) as argument to `--after` and `--before`, so that everone running the command will get the same repeatable results.
+> 
+> 
+> To obtain commits made at a specific instant in time (e.g. 29 April 2013 at 17:07:22 CET), we can use
+> 
+>     $ git log  --after="2013-04-29T17:07:22+0200"      \
+>               --before="2013-04-29T17:07:22+0200" --pretty=fuller
+>     
+>     commit de7c201a10857e5d424dbd8db880a6f24ba250f9
+>     Author:     Ramkumar Ramachandra <artagnon@gmail.com>
+>     AuthorDate: Mon Apr 29 18:19:37 2013 +0530
+>     Commit:     Junio C Hamano <gitster@pobox.com>
+>     CommitDate: Mon Apr 29 08:07:22 2013 -0700
+>     
+>         git-completion.bash: lexical sorting for diff.statGraphWidth
+>         
+>         df44483a (diff --stat: add config option to limit graph width,
+>         2012-03-01) added the option diff.startGraphWidth to the list of
+>         configuration variables in git-completion.bash, but failed to notice
+>         that the list is sorted alphabetically.  Move it to its rightful place
+>         in the list.
+>         
+>         Signed-off-by: Ramkumar Ramachandra <artagnon@gmail.com>
+>         Signed-off-by: Junio C Hamano <gitster@pobox.com>
+> 
+> The above times (`AuthorDate`, `CommitDate`) are displayed in default format (`--date=default`), which shows timezone information of respective author and commiter.
+> 
+> Other useful formats include `--date=iso` (ISO 8601), `--date=rfc` (RFC 2822), `--date=raw` (seconds since the epoch (1970-01-01 UTC)) `--date=local` (times according to your local timezone) as well as `--date=relative` (e.g. "2 hours ago").
+> 
+> When using `git log` without specifying time, the time defaults to the time at which the command is run on your computer (keeping the identical offset from UTC).
+> 
+> For example, running a `git log` at 09:00 on your computer with your timezone currently 3 hours ahead of UTC, makes the following two commands equivalent:
+980,1015c823,825
+< [[limit_options]]
+< .Options to limit the output of `git log`
+< [cols="2,4",options="header"]
+< |================================
+< | Option                | Description
+< | `-<n>`                | Show only the last n commits
+< | `--since`, `--after`  | Limit the commits to those made after the specified date.
+< | `--until`, `--before` | Limit the commits to those made before the specified date.
+< | `--author`            | Only show commits in which the author entry matches the specified string.
+< | `--committer`         | Only show commits in which the committer entry matches the specified string.
+< | `--grep`              | Only show commits with a commit message containing the string
+< | `-S`                  | Only show commits adding or removing code matching the string
+< |================================
+< 
+< For example, if you want to see which commits modifying test files in the Git source code history were committed by Junio Hamano in the month of October 2008 and are not merge commits, you can run something like this:(((log filtering)))
+< 
+< [source,console]
+< ----
+< $ git log --pretty="%h - %s" --author='Junio C Hamano' --since="2008-10-01" \
+<    --before="2008-11-01" --no-merges -- t/
+< 5610e3b - Fix testcase failure when extended attributes are in use
+< acd3b9e - Enhance hold_lock_file_for_{update,append}() API
+< f563754 - demonstrate breakage of detached checkout with symbolic link HEAD
+< d1a43f2 - reset --hard/read-tree --reset -u: remove unmerged new paths
+< 51a94af - Fix "checkout --track -b newbranch" on detached HEAD
+< b0ad11e - pull: allow "git pull origin $something:$current_branch" into an unborn branch
+< ----
+< 
+< Of the nearly 40,000 commits in the Git source code history, this command shows the 6 that match those criteria.
+< 
+< [TIP]
+< .Preventing the display of merge commits
+< ====
+< Depending on the workflow used in your repository, it's possible that a sizable percentage of the commits in your log history are just merge commits, which typically aren't very informative.
+< To prevent the display of merge commits cluttering up your log history, simply add the log option `--no-merges`.
+< ====
+---
+>     $ git log --after=2008-06-01 --before=2008-07-01
+>     $ git log --after="2008-06-01T09:00:00+0300" \
+>         --before="2008-07-01T09:00:00+0300"
+1016a827
+> As a final example, if you want to see which commits modifying test files in the Git source code history were committed by Junio Hamano with CommitDate being in the month of October 2008 (relative to the timezone of New York) and were not merges, you can run something like this:
+1018,1019c829,853
+< [[_undoing]]
+< === Undoing Things
+---
+>         $ git log --pretty="%h - %s" --author=gitster \
+>            --after="2008-10-01T00:00:00-0400"         \
+>           --before="2008-10-31T23:59:59-0400" --no-merges -- t/
+> 	5610e3b - Fix testcase failure when extended attribute
+> 	acd3b9e - Enhance hold_lock_file_for_{update,append}()
+> 	f563754 - demonstrate breakage of detached checkout wi
+> 	d1a43f2 - reset --hard/read-tree --reset -u: remove un
+> 	51a94af - Fix "checkout --track -b newbranch" on detac
+> 	b0ad11e - pull: allow "git pull origin $something:$cur
+> 
+> Of the more than 36,000 commits in the Git source code history, this command shows the 6 that match those criteria.
+> 
+> ### Using a GUI to Visualize History ###
+> 
+> If you like to use a more graphical tool to visualize your commit history, you may want to take a look at a Tcl/Tk program called `gitk` that is distributed with Git.
+> Gitk is basically a visual `git log` tool, and it accepts nearly all the filtering options that `git log` does.
+> If you type `gitk` on the command line in your project, you should see something like Figure 2-2.
+> 
+> Insert 18333fig0202.png
+> Figure 2-2. The gitk history visualizer.
+> 
+> You can see the commit history in the top half of the window along with a nice ancestry graph.
+> The diff viewer in the bottom half of the window shows you the changes introduced at any commit you click.
+> 
+> ## Undoing Things ##
+1022,1023c856,857
+< Here, we'll review a few basic tools for undoing changes that you've made.
+< Be careful, because you can't always undo some of these undos.
+---
+> Here, we’ll review a few basic tools for undoing changes that you’ve made.
+> Be careful, because you can’t always revert some of these undos.
+1025a860,861
+> ### Changing Your Last Commit ###
+> 
+1027c863
+< If you want to redo that commit, make the additional changes you forgot, stage them, and commit again using the `--amend` option:
+---
+> If you want to try that commit again, you can run commit with the `--amend` option:
+1029,1032c865
+< [source,console]
+< ----
+< $ git commit --amend
+< ----
+---
+> 	$ git commit --amend
+1035c868
+< If you've made no changes since your last commit (for instance, you run this command immediately after your previous commit), then your snapshot will look exactly the same, and all you'll change is your commit message.
+---
+> If you’ve made no changes since your last commit (for instance, you run this command immediately after your previous commit), then your snapshot will look exactly the same and all you’ll change is your commit message.
+1042,1054c875,877
+< [source,console]
+< ----
+< $ git commit -m 'initial commit'
+< $ git add forgotten_file
+< $ git commit --amend
+< ----
+< 
+< You end up with a single commit -- the second commit replaces the results of the first.
+< 
+< [NOTE]
+< ====
+< It's important to understand that when you're amending your last commit, you're not so much fixing it as _replacing_ it entirely with a new, improved commit that pushes the old commit out of the way and puts the new commit in its place.
+< Effectively, it's as if the previous commit never happened, and it won't show up in your repository history.
+---
+> 	$ git commit -m 'initial commit'
+> 	$ git add forgotten_file
+> 	$ git commit --amend
+1056,1057c879
+< The obvious value to amending commits is to make minor improvements to your last commit, without cluttering your repository history with commit messages of the form, ``Oops, forgot to add a file'' or ``Darn, fixing a typo in last commit''.
+< ====
+---
+> After these three commands, you end up with a single commit — the second commit replaces the results of the first.
+1059,1060c881
+< [[_unstaging]]
+< ==== Unstaging a Staged File
+---
+> ### Unstaging a Staged File ###
+1062c883
+< The next two sections demonstrate how to work with your staging area and working directory changes.
+---
+> The next two sections demonstrate how to wrangle your staging area and working directory changes.
+1064,1073c885,891
+< For example, let's say you've changed two files and want to commit them as two separate changes, but you accidentally type `git add *` and stage them both.
+< How can you unstage one of the two?
+< The `git status` command reminds you:
+< 
+< [source,console]
+< ----
+< $ git add *
+< $ git status
+< On branch master
+< Changes to be committed:
+---
+> For example, let’s say you’ve changed two files and want to commit them as two separate changes, but you accidentally type `git add *` and stage them both.
+> How can you unstage one of the two? The `git status` command reminds you:
+> 
+> 	$ git add .
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+1076,1090c894,906
+<     renamed:    README.md -> README
+<     modified:   CONTRIBUTING.md
+< ----
+< 
+< Right below the ``Changes to be committed'' text, it says use `git reset HEAD <file>...` to unstage.
+< So, let's use that advice to unstage the `CONTRIBUTING.md` file:
+< 
+< [source,console]
+< ----
+< $ git reset HEAD CONTRIBUTING.md
+< Unstaged changes after reset:
+< M	CONTRIBUTING.md
+< $ git status
+< On branch master
+< Changes to be committed:
+---
+> 	        modified:   README.txt
+> 	        modified:   benchmarks.rb
+> 	
+> 
+> Right below the “Changes to be committed” text, it says "use `git reset HEAD <file>...` to unstage".
+> So, let’s use that advice to unstage the `benchmarks.rb` file:
+> 
+> 	$ git reset HEAD benchmarks.rb
+> 	Unstaged changes after reset:
+> 	M       benchmarks.rb
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+1093c909
+<     renamed:    README.md -> README
+---
+> 	        modified:   README.txt
+1095c911
+< Changes not staged for commit:
+---
+> 	Changes not staged for commit:
+1099,1100c915,916
+<     modified:   CONTRIBUTING.md
+< ----
+---
+> 	        modified:   benchmarks.rb
+> 	
+1103c919,921
+< The `CONTRIBUTING.md` file is modified but once again unstaged.
+---
+> The `benchmarks.rb` file is modified but once again unstaged.
+> 
+> ### Unmodifying a Modified File ###
+1105,1118c923
+< [NOTE]
+< =====
+< It's true that `git reset` can be a dangerous command, especially if you provide the `--hard` flag.
+< However, in the scenario described above, the file in your working directory is not touched, so it's relatively safe.
+< =====
+< 
+< For now this magic invocation is all you need to know about the `git reset` command.
+< We'll go into much more detail about what `reset` does and how to master it to do really interesting things in <<ch07-git-tools#_git_reset>>.
+< 
+< ==== Unmodifying a Modified File
+< 
+< What if you realize that you don't want to keep your changes to the `CONTRIBUTING.md` file?
+< How can you easily unmodify it -- revert it back to what it looked like when you last committed (or initially cloned, or however you got it into your working directory)?
+< Luckily, `git status` tells you how to do that, too.
+---
+> What if you realize that you don’t want to keep your changes to the `benchmarks.rb` file? How can you easily unmodify it — revert it back to what it looked like when you last committed (or initially cloned, or however you got it into your working directory)? Luckily, `git status` tells you how to do that, too.
+1121,1123c926
+< [source,console]
+< ----
+< Changes not staged for commit:
+---
+> 	Changes not staged for commit:
+1127,1128c930,931
+<     modified:   CONTRIBUTING.md
+< ----
+---
+> 	        modified:   benchmarks.rb
+> 	
+1130,1131c933,934
+< It tells you pretty explicitly how to discard the changes you've made.
+< Let's do what it says:
+---
+> It tells you pretty explicitly how to discard the changes you’ve made (at least, the newer versions of Git, 1.6.1 and later, do this — if you have an older version, we highly recommend upgrading it to get some of these nicer usability features).
+> Let’s do what it says:
+1133,1138c936,939
+< [source,console]
+< ----
+< $ git checkout -- CONTRIBUTING.md
+< $ git status
+< On branch master
+< Changes to be committed:
+---
+> 	$ git checkout -- benchmarks.rb
+> 	$ git status
+> 	On branch master
+> 	Changes to be committed:
+1141c942
+<     renamed:    README.md -> README
+---
+> 	        modified:   README.txt
+1143d943
+< ----
+1145a946,948
+> You should also realize that this is a dangerous command: any changes you made to that file are gone — you just copied another file over it.
+> Don’t ever use this command unless you absolutely know that you don’t want the file.
+> If you just need to get it out of the way, we’ll go over stashing and branching in the next chapter; these are generally better ways to go.
+1147,1157c950,951
+< [IMPORTANT]
+< =====
+< It's important to understand that `git checkout -- <file>` is a dangerous command.
+< Any local changes you made to that file are gone -- Git just replaced that file with the most recently-committed version.
+< Don't ever use this command unless you absolutely know that you don't want those unsaved local changes.
+< =====
+< 
+< If you would like to keep the changes you've made to that file but still need to get it out of the way for now, we'll go over stashing and branching in <<ch03-git-branching#ch03-git-branching>>; these are generally better ways to go.
+< 
+< Remember, anything that is _committed_ in Git can almost always be recovered.
+< Even commits that were on branches that were deleted or commits that were overwritten with an `--amend` commit can be recovered (see <<ch10-git-internals#_data_recovery>> for data recovery).
+---
+> Remember, anything that is committed in Git can almost always be recovered.
+> Even commits that were on branches that were deleted or commits that were overwritten with an `--amend` commit can be recovered (see *Chapter 9* for data recovery).
+1160,1162c954
+< 
+< [[_remote_repos]]
+< === Working with Remotes
+---
+> ## Working with Remotes ##
+1169c961,963
+< In this section, we'll cover some of these remote-management skills.
+---
+> In this section, we’ll cover these remote-management skills.
+> 
+> ### Showing Your Remotes ###
+1171,1206c965,984
+< [NOTE]
+< .Remote repositories can be on your local machine.
+< ====
+< It is entirely possible that you can be working with a ``remote'' repository that is, in fact, on the same host you are.
+< The word ``remote'' does not necessarily imply that the repository is somewhere else on the network or Internet, only that it is elsewhere.
+< Working with such a remote repository would still involve all the standard pushing, pulling and fetching operations as with any other remote.
+< ====
+< 
+< ==== Showing Your Remotes
+< 
+< To see which remote servers you have configured, you can run the `git remote` command.(((git commands, remote)))
+< It lists the shortnames of each remote handle you've specified.
+< If you've cloned your repository, you should at least see `origin` -- that is the default name Git gives to the server you cloned from:
+< 
+< [source,console]
+< ----
+< $ git clone https://github.com/schacon/ticgit
+< Cloning into 'ticgit'...
+< remote: Reusing existing pack: 1857, done.
+< remote: Total 1857 (delta 0), reused 0 (delta 0)
+< Receiving objects: 100% (1857/1857), 374.35 KiB | 268.00 KiB/s, done.
+< Resolving deltas: 100% (772/772), done.
+< Checking connectivity... done.
+< $ cd ticgit
+< $ git remote
+< origin
+< ----
+< 
+< You can also specify `-v`, which shows you the URLs that Git has stored for the shortname to be used when reading and writing to that remote:
+< 
+< [source,console]
+< ----
+< $ git remote -v
+< origin	https://github.com/schacon/ticgit (fetch)
+< origin	https://github.com/schacon/ticgit (push)
+< ----
+---
+> To see which remote servers you have configured, you can run the `git remote` command.
+> It lists the shortnames of each remote handle you’ve specified.
+> If you’ve cloned your repository, you should at least see *origin* — that is the default name Git gives to the server you cloned from:
+> 
+> 	$ git clone git://github.com/schacon/ticgit.git
+> 	Cloning into 'ticgit'...
+> 	remote: Reusing existing pack: 1857, done.
+> 	remote: Total 1857 (delta 0), reused 0 (delta 0)
+> 	Receiving objects: 100% (1857/1857), 374.35 KiB | 193.00 KiB/s, done.
+> 	Resolving deltas: 100% (772/772), done.
+> 	Checking connectivity... done.
+> 	$ cd ticgit
+> 	$ git remote
+> 	origin
+> 
+> You can also specify `-v`, which shows you the URL that Git has stored for the shortname to be expanded to:
+> 
+> 	$ git remote -v
+> 	origin  git://github.com/schacon/ticgit.git (fetch)
+> 	origin  git://github.com/schacon/ticgit.git (push)
+1209c987
+< For example, a repository with multiple remotes for working with several collaborators might look something like this.
+---
+> For example, my Grit repository looks something like this.
+1211,1248c989,1010
+< [source,console]
+< ----
+< $ cd grit
+< $ git remote -v
+< bakkdoor  https://github.com/bakkdoor/grit (fetch)
+< bakkdoor  https://github.com/bakkdoor/grit (push)
+< cho45     https://github.com/cho45/grit (fetch)
+< cho45     https://github.com/cho45/grit (push)
+< defunkt   https://github.com/defunkt/grit (fetch)
+< defunkt   https://github.com/defunkt/grit (push)
+< koke      git://github.com/koke/grit.git (fetch)
+< koke      git://github.com/koke/grit.git (push)
+< origin    git@github.com:mojombo/grit.git (fetch)
+< origin    git@github.com:mojombo/grit.git (push)
+< ----
+< 
+< This means we can pull contributions from any of these users pretty easily.
+< We may additionally have permission to push to one or more of these, though we can't tell that here.
+< 
+< Notice that these remotes use a variety of protocols; we'll cover more about this in <<ch04-git-on-the-server#_getting_git_on_a_server>>.
+< 
+< ==== Adding Remote Repositories
+< 
+< We've mentioned and given some demonstrations of how the `git clone` command implicitly adds the `origin` remote for you.
+< Here's how to add a new remote explicitly.(((git commands, remote)))
+< To add a new remote Git repository as a shortname you can reference easily, run `git remote add <shortname> <url>`:
+< 
+< [source,console]
+< ----
+< $ git remote
+< origin
+< $ git remote add pb https://github.com/paulboone/ticgit
+< $ git remote -v
+< origin	https://github.com/schacon/ticgit (fetch)
+< origin	https://github.com/schacon/ticgit (push)
+< pb	https://github.com/paulboone/ticgit (fetch)
+< pb	https://github.com/paulboone/ticgit (push)
+< ----
+---
+> 	$ cd grit
+> 	$ git remote -v
+> 	bakkdoor  git://github.com/bakkdoor/grit.git
+> 	cho45     git://github.com/cho45/grit.git
+> 	defunkt   git://github.com/defunkt/grit.git
+> 	koke      git://github.com/koke/grit.git
+> 	origin    git@github.com:mojombo/grit.git
+> 
+> This means I can pull contributions from any of these users pretty easily.
+> But notice that only the origin remote is an SSH URL, so it’s the only one I can push to (we’ll cover why this is in *Chapter 4*).
+> 
+> ### Adding Remote Repositories ###
+> 
+> I’ve mentioned and given some demonstrations of adding remote repositories in previous sections, but here is how to do it explicitly.
+> To add a new remote Git repository as a shortname you can reference easily, run `git remote add [shortname] [url]`:
+> 
+> 	$ git remote
+> 	origin
+> 	$ git remote add pb git://github.com/paulboone/ticgit.git
+> 	$ git remote -v
+> 	origin	git://github.com/schacon/ticgit.git
+> 	pb	git://github.com/paulboone/ticgit.git
+1251c1013
+< For example, if you want to fetch all the information that Paul has but that you don't yet have in your repository, you can run `git fetch pb`:
+---
+> For example, if you want to fetch all the information that Paul has but that you don’t yet have in your repository, you can run `git fetch pb`:
+1253,1260c1015,1020
+< [source,console]
+< ----
+< $ git fetch pb
+< remote: Counting objects: 43, done.
+< remote: Compressing objects: 100% (36/36), done.
+< remote: Total 43 (delta 10), reused 31 (delta 5)
+< Unpacking objects: 100% (43/43), done.
+< From https://github.com/paulboone/ticgit
+---
+> 	$ git fetch pb
+> 	remote: Counting objects: 58, done.
+> 	remote: Compressing objects: 100% (41/41), done.
+> 	remote: Total 44 (delta 24), reused 1 (delta 0)
+> 	Unpacking objects: 100% (44/44), done.
+> 	From git://github.com/paulboone/ticgit
+1263d1022
+< ----
+1265,1266c1024
+< Paul's master branch is now accessible locally as `pb/master` -- you can merge it into one of your branches, or you can check out a local branch at that point if you want to inspect it.
+< (We'll go over what branches are and how to use them in much more detail in <<ch03-git-branching#ch03-git-branching>>.)
+---
+> Paul’s master branch is accessible locally as `pb/master` — you can merge it into one of your branches, or you can check out a local branch at that point if you want to inspect it.
+1268,1269c1026
+< [[_fetching_and_pulling]]
+< ==== Fetching and Pulling from Your Remotes
+---
+> ### Fetching and Pulling from Your Remotes ###
+1271c1028
+< As you just saw, to get data from your remote projects, you can run:(((git commands, fetch)))
+---
+> As you just saw, to get data from your remote projects, you can run:
+1273,1276c1030
+< [source,console]
+< ----
+< $ git fetch <remote>
+< ----
+---
+> 	$ git fetch [remote-name]
+1278c1032
+< The command goes out to that remote project and pulls down all the data from that remote project that you don't have yet.
+---
+> The command goes out to that remote project and pulls down all the data from that remote project that you don’t have yet.
+1279a1034
+> (We’ll go over what branches are and how to use them in much more detail in *Chapter 3*.)
+1281c1036
+< If you clone a repository, the command automatically adds that remote repository under the name ``origin''.
+---
+> If you clone a repository, the command automatically adds that remote repository under the name *origin*.
+1283,1284c1038,1039
+< It's important to note that the `git fetch` command only downloads the data to your local repository -- it doesn't automatically merge it with any of your work or modify what you're currently working on.
+< You have to merge it manually into your work when you're ready.
+---
+> It’s important to note that the `fetch` command pulls the data to your local repository — it doesn’t automatically merge it with any of your work or modify what you’re currently working on.
+> You have to merge it manually into your work when you’re ready.
+1286,1288c1041,1043
+< If your current branch is set up to track a remote branch (see the next section and <<ch03-git-branching#ch03-git-branching>> for more information), you can use the `git pull` command to automatically fetch and then merge that remote branch into your current branch.(((git commands, pull)))
+< This may be an easier or more comfortable workflow for you; and by default, the `git clone` command automatically sets up your local master branch to track the remote master branch (or whatever the default branch is called) on the server you cloned from.
+< Running `git pull` generally fetches data from the server you originally cloned from and automatically tries to merge it into the code you're currently working on.
+---
+> If you have a branch set up to track a remote branch (see the next section and *Chapter 3* for more information), you can use the `git pull` command to automatically fetch and then merge a remote branch into your current branch.
+> This may be an easier or more comfortable workflow for you; and by default, the `git clone` command automatically sets up your local master branch to track the remote master branch on the server you cloned from (assuming the remote has a master branch).
+> Running `git pull` generally fetches data from the server you originally cloned from and automatically tries to merge it into the code you’re currently working on.
+1290,1291c1045
+< [[_pushing_remotes]]
+< ==== Pushing to Your Remotes
+---
+> ### Pushing to Your Remotes ###
+1294,1295c1048,1049
+< The command for this is simple: `git push <remote> <branch>`.(((git commands, push)))
+< If you want to push your master branch to your `origin` server (again, cloning generally sets up both of those names for you automatically), then you can run this to push any commits you've done back up to the server:
+---
+> The command for this is simple: `git push [remote-name] [branch-name]`.
+> If you want to push your master branch to your `origin` server (again, cloning generally sets up both of those names for you automatically), then you can run this to push your work back up to the server:
+1297,1300c1051
+< [source,console]
+< ----
+< $ git push origin master
+< ----
+---
+> 	$ git push origin master
+1304,1305c1055,1056
+< You'll have to fetch their work first and incorporate it into yours before you'll be allowed to push.
+< See <<ch03-git-branching#ch03-git-branching>> for more detailed information on how to push to remote servers.
+---
+> You’ll have to pull down their work first and incorporate it into yours before you’ll be allowed to push.
+> See *Chapter 3* for more detailed information on how to push to remote servers.
+1307,1308c1058
+< [[_inspecting_remote]]
+< ==== Inspecting a Remote
+---
+> ### Inspecting a Remote ###
+1310c1060
+< If you want to see more information about a particular remote, you can use the `git remote show <remote>` command.(((git commands, remote)))
+---
+> If you want to see more information about a particular remote, you can use the `git remote show [remote-name]` command.
+1313,1327c1063,1070
+< [source,console]
+< ----
+< $ git remote show origin
+< * remote origin
+<   Fetch URL: https://github.com/schacon/ticgit
+<   Push  URL: https://github.com/schacon/ticgit
+<   HEAD branch: master
+<   Remote branches:
+<     master                               tracked
+<     dev-branch                           tracked
+<   Local branch configured for 'git pull':
+<     master merges with remote master
+<   Local ref configured for 'git push':
+<     master pushes to master (up to date)
+< ----
+---
+> 	$ git remote show origin
+> 	* remote origin
+> 	  URL: git://github.com/schacon/ticgit.git
+> 	  Remote branch merged with 'git pull' while on branch master
+> 	    master
+> 	  Tracked remote branches
+> 	    master
+> 	    ticgit
+1330c1073
+< The command helpfully tells you that if you're on the master branch and you run `git pull`, it will automatically merge in the master branch on the remote after it fetches all the remote references.
+---
+> The command helpfully tells you that if you’re on the master branch and you run `git pull`, it will automatically merge in the master branch on the remote after it fetches all the remote references.
+1333,1334c1076,1077
+< That is a simple example you're likely to encounter.
+< When you're using Git more heavily, however, you may see much more information from `git remote show`:
+---
+> That is a simple example you’re likely to encounter.
+> When you’re using Git more heavily, however, you may see much more information from `git remote show`:
+1336,1358c1079,1099
+< [source,console]
+< ----
+< $ git remote show origin
+< * remote origin
+<   URL: https://github.com/my-org/complex-project
+<   Fetch URL: https://github.com/my-org/complex-project
+<   Push  URL: https://github.com/my-org/complex-project
+<   HEAD branch: master
+<   Remote branches:
+<     master                           tracked
+<     dev-branch                       tracked
+<     markdown-strip                   tracked
+<     issue-43                         new (next fetch will store in remotes/origin)
+<     issue-45                         new (next fetch will store in remotes/origin)
+<     refs/remotes/origin/issue-11     stale (use 'git remote prune' to remove)
+<   Local branches configured for 'git pull':
+<     dev-branch merges with remote dev-branch
+<     master     merges with remote master
+<   Local refs configured for 'git push':
+<     dev-branch                     pushes to dev-branch                     (up to date)
+<     markdown-strip                 pushes to markdown-strip                 (up to date)
+<     master                         pushes to master                         (up to date)
+< ----
+---
+> 	$ git remote show origin
+> 	* remote origin
+> 	  URL: git@github.com:defunkt/github.git
+> 	  Remote branch merged with 'git pull' while on branch issues
+> 	    issues
+> 	  Remote branch merged with 'git pull' while on branch master
+> 	    master
+> 	  New remote branches (next fetch will store in remotes/origin)
+> 	    caching
+> 	  Stale tracking branches (use 'git remote prune')
+> 	    libwalker
+> 	    walker2
+> 	  Tracked remote branches
+> 	    acl
+> 	    apiv2
+> 	    dashboard2
+> 	    issues
+> 	    master
+> 	    postgres
+> 	  Local branch pushed with 'git push'
+> 	    master:master
+1360,1361c1101,1102
+< This command shows which branch is automatically pushed to when you run `git push` while on certain branches.
+< It also shows you which remote branches on the server you don't yet have, which remote branches you have that have been removed from the server, and multiple local branches that are able to merge automatically with their remote-tracking branch when you run `git pull`.
+---
+> This command shows which branch is automatically pushed when you run `git push` on certain branches.
+> It also shows you which remote branches on the server you don’t yet have, which remote branches you have that have been removed from the server, and multiple branches that are automatically merged when you run `git pull`.
+1363c1104
+< ==== Renaming and Removing Remotes
+---
+> ### Removing and Renaming Remotes ###
+1365c1106
+< You can run `git remote rename` to change a remote's shortname.(((git commands, remote)))
+---
+> If you want to rename a reference, in newer versions of Git you can run `git remote rename` to change a remote’s shortname.
+1368,1374c1109,1112
+< [source,console]
+< ----
+< $ git remote rename pb paul
+< $ git remote
+< origin
+< paul
+< ----
+---
+> 	$ git remote rename pb paul
+> 	$ git remote
+> 	origin
+> 	paul
+1376c1114
+< It's worth mentioning that this changes all your remote-tracking branch names, too.
+---
+> It’s worth mentioning that this changes your remote branch names, too.
+1379c1117,1127
+< If you want to remove a remote for some reason -- you've moved the server or are no longer using a particular mirror, or perhaps a contributor isn't contributing anymore -- you can either use `git remote remove` or `git remote rm`:
+---
+> If you want to remove a reference for some reason — you’ve moved the server or are no longer using a particular mirror, or perhaps a contributor isn’t contributing anymore — you can use `git remote rm`:
+> 
+> 	$ git remote rm paul
+> 	$ git remote
+> 	origin
+> 
+> ## Tagging ##
+> 
+> Like most VCSs, Git has the ability to tag specific points in history as being important.
+> Generally, people use this functionality to mark release points (`v1.0`, and so on).
+> In this section, you’ll learn how to list the available tags, how to create new tags, and what the different types of tags are.
+1381,1435c1129
+< [source,console]
+< ----
+< $ git remote remove paul
+< $ git remote
+< origin
+< ----
+< 
+< Once you delete the reference to a remote this way, all remote-tracking branches and configuration settings associated with that remote are also deleted.
+< 
+< 
+< [[_git_tagging]]
+< === Tagging
+< 
+< (((tags)))
+< Like most VCSs, Git has the ability to tag specific points in a repository's history as being important.
+< Typically, people use this functionality to mark release points (`v1.0`, `v2.0` and so on).
+< In this section, you'll learn how to list existing tags, how to create and delete tags, and what the different types of tags are.
+< 
+< ==== Listing Your Tags
+< 
+< Listing the existing tags in Git is straightforward.
+< Just type `git tag` (with optional `-l` or `--list`):(((git commands, tag)))
+< 
+< [source,console]
+< ----
+< $ git tag
+< v1.0
+< v2.0
+< ----
+< 
+< This command lists the tags in alphabetical order; the order in which they are displayed has no real importance.
+< 
+< You can also search for tags that match a particular pattern.
+< The Git source repo, for instance, contains more than 500 tags.
+< If you're interested only in looking at the 1.8.5 series, you can run this:
+< 
+< [source,console]
+< ----
+< $ git tag -l "v1.8.5*"
+< v1.8.5
+< v1.8.5-rc0
+< v1.8.5-rc1
+< v1.8.5-rc2
+< v1.8.5-rc3
+< v1.8.5.1
+< v1.8.5.2
+< v1.8.5.3
+< v1.8.5.4
+< v1.8.5.5
+< ----
+< 
+< [NOTE]
+< .Listing tag wildcards requires `-l` or `--list` option
+< ====
+< If you want just the entire list of tags, running the command `git tag` implicitly assumes you want a listing and provides one; the use of `-l` or `--list` in this case is optional.
+---
+> ### Listing Your Tags ###
+1437,1438c1131,1132
+< If, however, you're supplying a wildcard pattern to match tag names, the use of `-l` or `--list` is mandatory.
+< ====
+---
+> Listing the available tags in Git is straightforward.
+> Just type `git tag`:
+1440c1134,1136
+< ==== Creating Tags
+---
+> 	$ git tag
+> 	v0.1
+> 	v1.3
+1442c1138
+< Git supports two types of tags: _lightweight_ and _annotated_.
+---
+> This command lists the tags in alphabetical order; the order in which they appear has no real importance.
+1444c1140,1142
+< A lightweight tag is very much like a branch that doesn't change -- it's just a pointer to a specific commit.
+---
+> You can also search for tags with a particular pattern.
+> The Git source repo, for instance, contains more than 240 tags.
+> If you’re only interested in looking at the 1.4.2 series, you can run this:
+1445a1144,1153
+> 	$ git tag -l 'v1.4.2.*'
+> 	v1.4.2.1
+> 	v1.4.2.2
+> 	v1.4.2.3
+> 	v1.4.2.4
+> 
+> ### Creating Tags ###
+> 
+> Git uses two main types of tags: lightweight and annotated.
+> A lightweight tag is very much like a branch that doesn’t change — it’s just a pointer to a specific commit.
+1447,1448c1155,1156
+< They're checksummed; contain the tagger name, email, and date; have a tagging message; and can be signed and verified with GNU Privacy Guard (GPG).
+< It's generally recommended that you create annotated tags so you can have all this information; but if you want a temporary tag or for some reason don't want to keep the other information, lightweight tags are available too.
+---
+> They’re checksummed; contain the tagger name, e-mail, and date; have a tagging message; and can be signed and verified with GNU Privacy Guard (GPG).
+> It’s generally recommended that you create annotated tags so you can have all this information; but if you want a temporary tag or for some reason don’t want to keep the other information, lightweight tags are available too.
+1450,1451c1158
+< [[_annotated_tags]]
+< ==== Annotated Tags
+---
+> ### Annotated Tags ###
+1453d1159
+< (((tags, annotated)))
+1455c1161
+< The easiest way is to specify `-a` when you run the `tag` command:(((git commands, tag)))
+---
+> The easiest way is to specify `-a` when you run the `tag` command:
+1457,1464c1163,1167
+< [source,console]
+< ----
+< $ git tag -a v1.4 -m "my version 1.4"
+< $ git tag
+< v0.1
+< v1.3
+< v1.4
+< ----
+---
+> 	$ git tag -a v1.4 -m 'my version 1.4'
+> 	$ git tag
+> 	v0.1
+> 	v1.3
+> 	v1.4
+1467c1170
+< If you don't specify a message for an annotated tag, Git launches your editor so you can type it in.
+---
+> If you don’t specify a message for an annotated tag, Git launches your editor so you can type it in.
+1471,1482c1174,1184
+< [source,console]
+< ----
+< $ git show v1.4
+< tag v1.4
+< Tagger: Ben Straub <ben@straub.cc>
+< Date:   Sat May 3 20:19:12 2014 -0700
+< 
+< my version 1.4
+< 
+< commit ca82a6dff817ec66f44342007202690a93763949
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Mon Mar 17 21:52:11 2008 -0700
+---
+> 	$ git show v1.4
+> 	tag v1.4
+> 	Tagger: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Feb 9 14:45:11 2009 -0800
+> 
+> 	my version 1.4
+> 
+> 	commit 15027957951b64cf874c3557a0f3547bd83b3ff6
+> 	Merge: 4a447f7... a6b4c97...
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sun Feb 8 19:02:46 2009 -0800
+1484,1485c1186
+<     changed the version number
+< ----
+---
+> 	    Merge branch 'experiment'
+1489c1190,1224
+< ==== Lightweight Tags
+---
+> ### Signed Tags ###
+> 
+> You can also sign your tags with GPG, assuming you have a private key.
+> All you have to do is use `-s` instead of `-a`:
+> 
+> 	$ git tag -s v1.5 -m 'my signed 1.5 tag'
+> 	You need a passphrase to unlock the secret key for
+> 	user: "Scott Chacon <schacon@gee-mail.com>"
+> 	1024-bit DSA key, ID F721C45A, created 2009-02-09
+> 
+> If you run `git show` on that tag, you can see your GPG signature attached to it:
+> 
+> 	$ git show v1.5
+> 	tag v1.5
+> 	Tagger: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Feb 9 15:22:20 2009 -0800
+> 
+> 	my signed 1.5 tag
+> 	-----BEGIN PGP SIGNATURE-----
+> 	Version: GnuPG v1.4.8 (Darwin)
+> 
+> 	iEYEABECAAYFAkmQurIACgkQON3DxfchxFr5cACeIMN+ZxLKggJQf0QYiQBwgySN
+> 	Ki0An2JeAVUCAiJ7Ox6ZEtK+NvZAj82/
+> 	=WryJ
+> 	-----END PGP SIGNATURE-----
+> 	commit 15027957951b64cf874c3557a0f3547bd83b3ff6
+> 	Merge: 4a447f7... a6b4c97...
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sun Feb 8 19:02:46 2009 -0800
+> 
+> 	    Merge branch 'experiment'
+> 
+> A bit later, you’ll learn how to verify signed tags.
+> 
+> ### Lightweight Tags ###
+1491d1225
+< (((tags, lightweight)))
+1493,1494c1227,1228
+< This is basically the commit checksum stored in a file -- no other information is kept.
+< To create a lightweight tag, don't supply any of the `-a`, `-s`, or `-m` options, just provide a tag name:
+---
+> This is basically the commit checksum stored in a file — no other information is kept.
+> To create a lightweight tag, don’t supply the `-a`, `-s`, or `-m` option:
+1496,1505c1230,1236
+< [source,console]
+< ----
+< $ git tag v1.4-lw
+< $ git tag
+< v0.1
+< v1.3
+< v1.4
+< v1.4-lw
+< v1.5
+< ----
+---
+> 	$ git tag v1.4-lw
+> 	$ git tag
+> 	v0.1
+> 	v1.3
+> 	v1.4
+> 	v1.4-lw
+> 	v1.5
+1507c1238
+< This time, if you run `git show` on the tag, you don't see the extra tag information.(((git commands, show)))
+---
+> This time, if you run `git show` on the tag, you don’t see the extra tag information.
+1510,1515c1241,1245
+< [source,console]
+< ----
+< $ git show v1.4-lw
+< commit ca82a6dff817ec66f44342007202690a93763949
+< Author: Scott Chacon <schacon@gee-mail.com>
+< Date:   Mon Mar 17 21:52:11 2008 -0700
+---
+> 	$ git show v1.4-lw
+> 	commit 15027957951b64cf874c3557a0f3547bd83b3ff6
+> 	Merge: 4a447f7... a6b4c97...
+> 	Author: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Sun Feb 8 19:02:46 2009 -0800
+1517,1518c1247,1273
+<     changed the version number
+< ----
+---
+> 	    Merge branch 'experiment'
+> 
+> ### Verifying Tags ###
+> 
+> To verify a signed tag, you use `git tag -v [tag-name]`.
+> This command uses GPG to verify the signature.
+> You need the signer’s public key in your keyring for this to work properly:
+> 
+> 	$ git tag -v v1.4.2.1
+> 	object 883653babd8ee7ea23e6a5c392bb739348b1eb61
+> 	type commit
+> 	tag v1.4.2.1
+> 	tagger Junio C Hamano <junkio@cox.net> 1158138501 -0700
+> 
+> 	GIT 1.4.2.1
+> 
+> 	Minor fixes since 1.4.2, including git-mv and git-http with alternates.
+> 	gpg: Signature made Wed Sep 13 02:08:25 2006 PDT using DSA key ID F3119B9A
+> 	gpg: Good signature from "Junio C Hamano <junkio@cox.net>"
+> 	gpg:                 aka "[jpeg image of size 1513]"
+> 	Primary key fingerprint: 3565 2A26 2040 E066 C9A7  4A7D C0C6 D9A4 F311 9B9A
+> 
+> If you don’t have the signer’s public key, you get something like this instead:
+> 
+> 	gpg: Signature made Wed Sep 13 02:08:25 2006 PDT using DSA key ID F3119B9A
+> 	gpg: Can't check signature: public key not found
+> 	error: could not verify the tag 'v1.4.2.1'
+1520c1275
+< ==== Tagging Later
+---
+> ### Tagging Later ###
+1522c1277
+< You can also tag commits after you've moved past them.
+---
+> You can also tag commits after you’ve moved past them.
+1525,1538c1280,1290
+< [source,console]
+< ----
+< $ git log --pretty=oneline
+< 15027957951b64cf874c3557a0f3547bd83b3ff6 Merge branch 'experiment'
+< a6b4c97498bd301d84096da251c98a07c7723e65 beginning write support
+< 0d52aaab4479697da7686c15f77a3d64d9165190 one more thing
+< 6d52a271eda8725415634dd79daabbc4d9b6008e Merge branch 'experiment'
+< 0b7434d86859cc7b8c3d5e1dddfed66ff742fcbc added a commit function
+< 4682c3261057305bdd616e23b64b0857d832627b added a todo file
+< 166ae0c4d3f420721acbb115cc33848dfcc2121a started write support
+< 9fceb02d0ae598e95dc970b74767f19372d61af8 updated rakefile
+< 964f16d36dfccde844893cac5b347e7b3d44abbc commit the todo
+< 8a5cbc430f1a9c3d00faaeffd07798508422908a updated readme
+< ----
+---
+> 	$ git log --pretty=oneline
+> 	15027957951b64cf874c3557a0f3547bd83b3ff6 Merge branch 'experiment'
+> 	a6b4c97498bd301d84096da251c98a07c7723e65 beginning write support
+> 	0d52aaab4479697da7686c15f77a3d64d9165190 one more thing
+> 	6d52a271eda8725415634dd79daabbc4d9b6008e Merge branch 'experiment'
+> 	0b7434d86859cc7b8c3d5e1dddfed66ff742fcbc added a commit function
+> 	4682c3261057305bdd616e23b64b0857d832627b added a todo file
+> 	166ae0c4d3f420721acbb115cc33848dfcc2121a started write support
+> 	9fceb02d0ae598e95dc970b74767f19372d61af8 updated rakefile
+> 	964f16d36dfccde844893cac5b347e7b3d44abbc commit the todo
+> 	8a5cbc430f1a9c3d00faaeffd07798508422908a updated readme
+1540c1292
+< Now, suppose you forgot to tag the project at v1.2, which was at the ``updated rakefile'' commit.
+---
+> Now, suppose you forgot to tag the project at `v1.2`, which was at the "updated rakefile" commit.
+1544,1569c1296,1316
+< [source,console]
+< ----
+< $ git tag -a v1.2 9fceb02
+< ----
+< 
+< You can see that you've tagged the commit:(((git commands, tag)))
+< 
+< [source,console]
+< ----
+< $ git tag
+< v0.1
+< v1.2
+< v1.3
+< v1.4
+< v1.4-lw
+< v1.5
+< 
+< $ git show v1.2
+< tag v1.2
+< Tagger: Scott Chacon <schacon@gee-mail.com>
+< Date:   Mon Feb 9 15:32:16 2009 -0800
+< 
+< version 1.2
+< commit 9fceb02d0ae598e95dc970b74767f19372d61af8
+< Author: Magnus Chacon <mchacon@gee-mail.com>
+< Date:   Sun Apr 27 20:43:35 2008 -0700
+---
+> 	$ git tag -a v1.2 -m 'version 1.2' 9fceb02
+> 
+> You can see that you’ve tagged the commit:
+> 
+> 	$ git tag
+> 	v0.1
+> 	v1.2
+> 	v1.3
+> 	v1.4
+> 	v1.4-lw
+> 	v1.5
+> 
+> 	$ git show v1.2
+> 	tag v1.2
+> 	Tagger: Scott Chacon <schacon@gee-mail.com>
+> 	Date:   Mon Feb 9 15:32:16 2009 -0800
+> 
+> 	version 1.2
+> 	commit 9fceb02d0ae598e95dc970b74767f19372d61af8
+> 	Author: Magnus Chacon <mchacon@gee-mail.com>
+> 	Date:   Sun Apr 27 20:43:35 2008 -0700
+1572,1573c1319
+< ...
+< ----
+---
+> 	...
+1575,1576c1321
+< [[_sharing_tags]]
+< ==== Sharing Tags
+---
+> ### Sharing Tags ###
+1578c1323
+< By default, the `git push` command doesn't transfer tags to remote servers.(((git commands, push)))
+---
+> By default, the `git push` command doesn’t transfer tags to remote servers.
+1580c1325
+< This process is just like sharing remote branches -- you can run `git push origin <tagname>`.
+---
+>  This process is just like sharing remote branches — you can run `git push origin [tagname]`.
+1582,1590c1327,1332
+< [source,console]
+< ----
+< $ git push origin v1.5
+< Counting objects: 14, done.
+< Delta compression using up to 8 threads.
+< Compressing objects: 100% (12/12), done.
+< Writing objects: 100% (14/14), 2.05 KiB | 0 bytes/s, done.
+< Total 14 (delta 3), reused 0 (delta 0)
+< To git@github.com:schacon/simplegit.git
+---
+> 	$ git push origin v1.5
+> 	Counting objects: 50, done.
+> 	Compressing objects: 100% (38/38), done.
+> 	Writing objects: 100% (44/44), 4.56 KiB, done.
+> 	Total 44 (delta 18), reused 8 (delta 1)
+> 	To git@github.com:schacon/simplegit.git
+1592d1333
+< ----
+1595c1336
+< This will transfer all of your tags to the remote server that are not already there.
+---
+>  This will transfer all of your tags to the remote server that are not already there.
+1597,1603c1338,1345
+< [source,console]
+< ----
+< $ git push origin --tags
+< Counting objects: 1, done.
+< Writing objects: 100% (1/1), 160 bytes | 0 bytes/s, done.
+< Total 1 (delta 0), reused 0 (delta 0)
+< To git@github.com:schacon/simplegit.git
+---
+> 	$ git push origin --tags
+> 	Counting objects: 50, done.
+> 	Compressing objects: 100% (38/38), done.
+> 	Writing objects: 100% (44/44), 4.56 KiB, done.
+> 	Total 44 (delta 18), reused 8 (delta 1)
+> 	To git@github.com:schacon/simplegit.git
+> 	 * [new tag]         v0.1 -> v0.1
+> 	 * [new tag]         v1.2 -> v1.2
+1606c1348
+< ----
+---
+> 	 * [new tag]         v1.5 -> v1.5
+1610,1648c1352
+< [NOTE]
+< .`git push` pushes both types of tags
+< ====
+< Pushing tags using `git push <remote> --tags` does not distinguish between lightweight and annotated tags; there is no simple option that allows you to select just one type for pushing.
+< ====
+< 
+< ==== Deleting Tags
+< 
+< To delete a tag on your local repository, you can use `git tag -d <tagname>`.
+< For example, we could remove our lightweight tag above as follows:
+< 
+< [source,console]
+< ----
+< $ git tag -d v1.4-lw
+< Deleted tag 'v1.4-lw' (was e7d5add)
+< ----
+< 
+< Note that this does not remove the tag from any remote servers.
+< There are two common variations for deleting a tag from a remote server.
+< 
+< The first variation is `git push <remote> :refs/tags/<tagname>`:
+< 
+< [source,console]
+< ----
+< $ git push origin :refs/tags/v1.4-lw
+< To /git@github.com:schacon/simplegit.git
+<  - [deleted]         v1.4-lw
+< ----
+< 
+< The way to interpret the above is to read it as the null value before the colon is being pushed to the remote tag name, effectively deleting it.
+< 
+< The second (and more intuitive) way to delete a remote tag is with:
+< 
+< [source,console]
+< ----
+< $ git push origin --delete <tagname>
+< ----
+< 
+< ==== Checking out Tags
+---
+> ## Tips and Tricks ##
+1650c1354,1355
+< If you want to view the versions of files a tag is pointing to, you can do a `git checkout` of that tag, although this puts your repository in ``detached HEAD'' state, which has some ill side effects:
+---
+> Before we finish this chapter on basic Git, a few little tips and tricks may make your Git experience a bit simpler, easier, or more familiar.
+> Many people use Git without using any of these tips, and we won’t refer to them or assume you’ve used them later in the book; but you should probably know how to do them.
+1652,1655c1357
+< [source,console]
+< ----
+< $ git checkout 2.0.0
+< Note: checking out '2.0.0'.
+---
+> ### Auto-Completion ###
+1657,1659c1359,1361
+< You are in 'detached HEAD' state. You can look around, make experimental
+< changes and commit them, and you can discard any commits you make in this
+< state without impacting any branches by performing another checkout.
+---
+> If you use the Bash shell, Git comes with a nice auto-completion script you can enable.
+> Download it directly from the Git source code at https://github.com/git/git/blob/master/contrib/completion/git-completion.bash .
+> Copy this file to your home directory, and add this to your `.bashrc` file:
+1661,1662c1363
+< If you want to create a new branch to retain commits you create, you may
+< do so (now or later) by using -b with the checkout command again. Example:
+---
+> 	source ~/git-completion.bash
+1664c1365,1366
+<   git checkout -b <new-branch>
+---
+> If you want to set up Git to automatically have Bash shell completion for all users, copy this script to the `/opt/local/etc/bash_completion.d` directory on Mac systems or to the `/etc/bash_completion.d/` directory on Linux systems.
+> This is a directory of scripts that Bash will automatically load to provide shell completions.
+1666c1368
+< HEAD is now at 99ada87... Merge pull request #89 from schacon/appendix-final
+---
+> If you’re using Windows with Git Bash, which is the default when installing Git on Windows with msysGit, auto-completion should be preconfigured.
+1668,1671c1370
+< $ git checkout 2.0-beta-0.1
+< Previous HEAD position was 99ada87... Merge pull request #89 from schacon/appendix-final
+< HEAD is now at df3f601... add atlas.json and cover image
+< ----
+---
+> Press the Tab key when you’re writing a Git command, and it should return a set of suggestions for you to pick from:
+1673,1674c1372,1373
+< In ``detached HEAD'' state, if you make changes and then create a commit, the tag will stay the same, but your new commit won't belong to any branch and will be unreachable, except by the exact commit hash.
+< Thus, if you need to make changes -- say you're fixing a bug on an older version, for instance -- you will generally want to create a branch:
+---
+> 	$ git co<tab><tab>
+> 	commit config
+1676,1680c1375,1376
+< [source,console]
+< ----
+< $ git checkout -b version2 v2.0.0
+< Switched to a new branch 'version2'
+< ----
+---
+> In this case, typing `git co` and then pressing the Tab key twice suggests commit and config.
+> Adding `m<tab>` completes `git commit` automatically.
+1682c1378,1379
+< If you do this and make a commit, your `version2` branch will be slightly different than your `v2.0.0` tag since it will move forward with your new changes, so do be careful.
+---
+> This also works with options, which is probably more useful.
+> For instance, if you’re running a `git log` command and can’t remember one of the options, you can start typing it and press Tab to see what matches:
+1683a1381,1385
+> 	$ git log --s<tab><tab>
+> 	--shortstat               --sparse
+> 	--simplify-by-decoration  --src-prefix=
+> 	--simplify-merges         --stat
+> 	--since=                  --summary
+1685,1686c1387
+< [[_git_aliases]]
+< === Git Aliases
+---
+> That’s a pretty nice trick and may save you some time and documentation reading.
+1688,1690c1389
+< (((aliases)))
+< Before we finish this chapter on basic Git, there's just one little tip that can make your Git experience simpler, easier, and more familiar: aliases.
+< We won't refer to them or assume you've used them later in the book, but you should probably know how to use them.
+---
+> ### Git Aliases ###
+1692,1693c1391,1392
+< Git doesn't automatically infer your command if you type it in partially.
+< If you don't want to type the entire text of each of the Git commands, you can easily set up an alias for each command using `git config`.(((git commands, config)))
+---
+> Git doesn’t infer your command if you type it in partially.
+> If you don’t want to type the entire text of each of the Git commands, you can easily set up an alias for each command using `git config`.
+1696,1702c1395,1398
+< [source,console]
+< ----
+< $ git config --global alias.co checkout
+< $ git config --global alias.br branch
+< $ git config --global alias.ci commit
+< $ git config --global alias.st status
+< ----
+---
+> 	$ git config --global alias.co checkout
+> 	$ git config --global alias.br branch
+> 	$ git config --global alias.ci commit
+> 	$ git config --global alias.st status
+1705c1401
+< As you go on using Git, you'll probably use other commands frequently as well; don't hesitate to create new aliases.
+---
+> As you go on using Git, you’ll probably use other commands frequently as well; in this case, don’t hesitate to create new aliases.
+1710,1713c1406
+< [source,console]
+< ----
+< $ git config --global alias.unstage 'reset HEAD --'
+< ----
+---
+> 	$ git config --global alias.unstage 'reset HEAD --'
+1717,1721c1410,1411
+< [source,console]
+< ----
+< $ git unstage fileA
+< $ git reset HEAD -- fileA
+< ----
+---
+> 	$ git unstage fileA
+> 	$ git reset HEAD fileA
+1724c1414
+< It's also common to add a `last` command, like this:
+---
+> It’s also common to add a `last` command, like this:
+1726,1729c1416
+< [source,console]
+< ----
+< $ git config --global alias.last 'log -1 HEAD'
+< ----
+---
+> 	$ git config --global alias.last 'log -1 HEAD'
+1733,1738c1420,1423
+< [source,console]
+< ----
+< $ git last
+< commit 66938dae3329c7aebe598c2246a8e6af90d04646
+< Author: Josh Goebel <dreamer3@example.com>
+< Date:   Tue Aug 26 19:48:51 2008 +0800
+---
+> 	$ git last
+> 	commit 66938dae3329c7aebe598c2246a8e6af90d04646
+> 	Author: Josh Goebel <dreamer3@example.com>
+> 	Date:   Tue Aug 26 19:48:51 2008 +0800
+1743d1427
+< ----
+1745c1429
+< As you can tell, Git simply replaces the new command with whatever you alias it for.
+---
+> As you can tell, Git simply replaces the new command with whatever you alias it to.
+1751,1754c1435
+< [source,console]
+< ----
+< $ git config --global alias.visual '!gitk'
+< ----
+---
+> 	$ git config --global alias.visual '!gitk'
+1756c1437
+< === Summary
+---
+> ## Summary ##
+1758,1759c1439,1440
+< At this point, you can do all the basic local Git operations -- creating or cloning a repository, making changes, staging and committing those changes, and viewing the history of all the changes the repository has been through.
+< Next, we'll cover Git's killer feature: its branching model.
+---
+> At this point, you can do all the basic local Git operations — creating or cloning a repository, making changes, staging and committing those changes, and viewing the history of all the changes the repository has been through.
+> Next, we’ll cover Git’s killer feature: its branching model.
